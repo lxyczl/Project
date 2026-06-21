@@ -51,32 +51,21 @@ def split_paragraphs(text: str, is_markdown: bool) -> List[dict]:
         # 检测标题（仅 Markdown 模式）
         if is_markdown and stripped.startswith('#'):
             # 先保存当前积累的段落
-            if current_text_lines:
-                para_text = '\n'.join(current_text_lines).strip()
-                if para_text:
-                    paragraphs.append(_make_para(len(paragraphs), para_text, pos, current_section))
-                    pos += len(para_text) + 1
-                current_text_lines = []
+            pos = _flush_paragraph(current_text_lines, paragraphs, pos, current_section)
+            current_text_lines = []
             current_section = detect_section(stripped)
             continue
 
         # 空行 = 段落分隔
         if not stripped:
-            if current_text_lines:
-                para_text = '\n'.join(current_text_lines).strip()
-                if para_text:
-                    paragraphs.append(_make_para(len(paragraphs), para_text, pos, current_section))
-                    pos += len(para_text) + 1
-                current_text_lines = []
+            pos = _flush_paragraph(current_text_lines, paragraphs, pos, current_section)
+            current_text_lines = []
             continue
 
         current_text_lines.append(stripped)
 
     # 处理最后一段
-    if current_text_lines:
-        para_text = '\n'.join(current_text_lines).strip()
-        if para_text:
-            paragraphs.append(_make_para(len(paragraphs), para_text, pos, current_section))
+    _flush_paragraph(current_text_lines, paragraphs, pos, current_section)
 
     # 处理超长段落拆分
     result: List[dict] = []
@@ -91,6 +80,21 @@ def split_paragraphs(text: str, is_markdown: bool) -> List[dict]:
         p["index"] = i
 
     return result
+
+
+def _flush_paragraph(
+    current_text_lines: List[str],
+    paragraphs: List[dict],
+    pos: int,
+    current_section: str,
+) -> int:
+    """将当前积累的行合并为一个段落并追加到列表，返回更新后的 pos。"""
+    if current_text_lines:
+        para_text = '\n'.join(current_text_lines).strip()
+        if para_text:
+            paragraphs.append(_make_para(len(paragraphs), para_text, pos, current_section))
+            return pos + len(para_text) + 1
+    return pos
 
 
 def _make_para(index: int, text: str, start: int, section_type: str) -> dict:
@@ -119,12 +123,12 @@ def _split_long_paragraph(para: dict) -> List[dict]:
         current_chunk.append(sent)
         current_len += len(sent)
         if current_len >= 1500:
-            chunks.append(' '.join(current_chunk))
+            chunks.append(''.join(current_chunk))
             current_chunk = []
             current_len = 0
 
     if current_chunk:
-        chunks.append(' '.join(current_chunk))
+        chunks.append(''.join(current_chunk))
 
     result: List[dict] = []
     for chunk in chunks:
