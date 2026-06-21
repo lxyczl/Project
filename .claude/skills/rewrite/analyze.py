@@ -74,7 +74,11 @@ def main():
         sys.exit(1)
 
     patterns_dir = Path(args.patterns) if args.patterns else None
-    result = analyze_text(text, is_markdown, args.threshold, patterns_dir)
+
+    try:
+        result = analyze_text(text, is_markdown, args.threshold, patterns_dir)
+    except Exception as e:
+        result = {"error": f"分析过程出错: {e}", "overall_risk": None, "paragraphs": []}
 
     if args.output:
         Path(args.output).write_text(
