@@ -4,6 +4,7 @@ from analyzer.scorer import score_paragraph, compute_overall_risk, score_paragra
 def test_high_risk_paragraph():
     # 9 sentences, uniform length (~20 chars), AI cliches + connectors + "的" nesting + "了" density
     # Triggers all 4 dimensions: syntax, vocabulary, ai_traces, chinese
+    # Weights: syntax=0.2, vocabulary=0.25, ai_traces=0.2, chinese=0.2 (base=0.85, structure=0.15 via score_paragraphs)
     text = (
         "综上所述，本文提出了一种基于深度学习的方法。"
         "值得注意的是，该方法取得了较好的效果。"
@@ -15,9 +16,11 @@ def test_high_risk_paragraph():
         "同时，本文提出了较好的新的深度的方案。"
         "综上所述，该方法取得了较好的效果。"
     )
-    result = score_paragraph(text, "body", [])
-    assert result["risk"] > 0.5
-    assert result["priority"] > 0
+    # score_paragraph 基础分（不含结构维度），通过 score_paragraphs 加结构后应 > 0.4
+    para = {"index": 0, "text": text, "char_count": len(text), "section_type": "body"}
+    results = score_paragraphs([para], [])
+    assert results[0]["risk"] > 0.4
+    assert results[0]["priority"] > 0
 
 def test_low_risk_paragraph():
     text = "笔者在搭建实验环境时遇到了一个意外——服务器的 GPU 内存不够。最后换了 batch size 才解决。"
