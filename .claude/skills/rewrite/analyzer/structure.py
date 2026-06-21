@@ -1,10 +1,10 @@
 """结构规律分析维度。"""
 
 import statistics
-from typing import List
+from collections import Counter
 
 
-def analyze_structure(paragraphs: List[dict]) -> dict:
+def analyze_structure(paragraphs: list[dict]) -> dict:
     """分析段落结构规律，返回风险分和问题列表。"""
     if len(paragraphs) < 3:
         return {"score": 0.0, "issues": []}
@@ -33,7 +33,6 @@ def analyze_structure(paragraphs: List[dict]) -> dict:
         # 简单检查：前几个字是否相同
         prefixes = [s[:5] for s in first_sentences if len(s) >= 5]
         if len(prefixes) >= 3:
-            from collections import Counter
             most_common = Counter(prefixes).most_common(1)
             if most_common and most_common[0][1] >= 3:
                 issues.append({"type": "uniform_para_start", "detail": f"段首句模式重复: '{most_common[0][0]}...' 出现 {most_common[0][1]} 次"})

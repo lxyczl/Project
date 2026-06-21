@@ -2,7 +2,7 @@
 
 import re
 import statistics
-from typing import List
+
 from utils.text import split_sentences
 
 
@@ -35,11 +35,11 @@ def analyze_syntax(text: str) -> dict:
     if deep_nested > 0:
         issues.append({"type": "deep_nesting", "detail": f"检测到 {deep_nested} 处深层嵌套"})
 
-    score = _calculate_score(issues, len(sentences))
+    score = _calculate_score(issues)
     return {"score": score, "issues": issues}
 
 
-def _calculate_score(issues: list, sentence_count: int) -> float:
+def _calculate_score(issues: list) -> float:
     base = 0.0
     for issue in issues:
         if issue["type"] == "uniform_sentence_length":

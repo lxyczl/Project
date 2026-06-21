@@ -1,7 +1,6 @@
 """词汇分布分析维度。"""
 
 import re
-from typing import List
 
 
 # AI 高频连接词
