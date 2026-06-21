@@ -1,0 +1,16 @@
+[project]
+name = "aigc-rewriter"
+version = "0.1.0"
+description = "中文论文降 AIGC 率分析引擎"
+requires-python = ">=3.10"
+dependencies = [
+    "jieba>=0.42.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[project.scripts]
+aigc-analyze = "analyze:main"
