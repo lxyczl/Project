@@ -4,6 +4,7 @@
 import pytest
 from pathlib import Path
 import sys
+import json
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
@@ -176,6 +177,112 @@ class TestClassifyFailure:
         from feedback_system import classify_failure
         assert classify_failure({}, "excellent") == "none"
         assert classify_failure({}, "success") == "none"
+
+
+class TestTechniqueCombinations:
+    """测试技巧组合学习"""
+
+    def test_technique_combinations_recorded(self, tmp_path):
+        """技巧组合应被记录"""
+        system = FeedbackSystem(tmp_path)
+        session = system.record_rewrite_session(
+            original_text="The method is effective",
+            rewritten_text="The approach demonstrates efficacy",
+            domain="test",
+            intensity="medium",
+            changes_made=[
+                {"type": "voice_conversion", "original": "We analyzed", "rewritten": "Analysis was performed"},
+                {"type": "synonym_replacement", "original": "effective", "rewritten": "efficacious"},
+            ]
+        )
+        system.collect_feedback(session["session_id"], overall_score=5)
+        combos = system.strategies.get("technique_combinations", {})
+        assert len(combos) > 0
+
+    def test_effective_combinations_in_suggestions(self, tmp_path):
+        """建议中应包含有效组合"""
+        system = FeedbackSystem(tmp_path)
+        # 模拟多次成功的组合
+        system.strategies["technique_combinations"] = {
+            "voice_conversion+synonym_replacement": {"success": 5, "total": 5}
+        }
+        suggestions = system.get_rewrite_suggestions("test", "medium")
+        assert "effective_combinations" in suggestions
+        assert len(suggestions["effective_combinations"]) > 0
+
+
+class TestAdaptiveLearningRate:
+    """测试自适应学习率"""
+
+    def test_consecutive_failures_increase_step(self, tmp_path):
+        """连续失败时步长应递增"""
+        system = FeedbackSystem(tmp_path)
+        adj = system.strategies["intensity_adjustments"]["medium"]
+        # 模拟连续失败
+        adj["consecutive_failures"] = 3
+        adj["multiplier"] = 1.0
+        system._save_strategies()
+
+        # 触发学习 — 需要指标触发 fail 判定
+        session = system.record_rewrite_session("orig", "rew", "test", "medium")
+        session["metrics"]["max_consecutive"] = 10
+        session["metrics"]["trigram_precision"] = 0.3
+        # 保存更新后的指标到文件
+        session_file = system.sessions_dir / f"{session['session_id']}.json"
+        with open(session_file, 'w', encoding='utf-8') as f:
+            json.dump(session, f, ensure_ascii=False, indent=2)
+        system.collect_feedback(session["session_id"], overall_score=1)
+
+        new_adj = system.strategies["intensity_adjustments"]["medium"]
+        # 步长应为 min(0.10, 0.05 + 3 * 0.01) = 0.08
+        assert new_adj["multiplier"] > 1.0
+
+    def test_success_resets_counters(self, tmp_path):
+        """success 应重置连续计数器"""
+        system = FeedbackSystem(tmp_path)
+        adj = system.strategies["intensity_adjustments"]["medium"]
+        adj["consecutive_failures"] = 3
+        adj["consecutive_successes"] = 0
+        adj["multiplier"] = 1.2
+        system._save_strategies()
+
+        session = system.record_rewrite_session("orig", "rew", "test", "medium")
+        # 设置指标为 success（非 excellent），避免 multiplier 被降低
+        session["metrics"]["max_consecutive"] = 4
+        session["metrics"]["trigram_precision"] = 0.20
+        session_file = system.sessions_dir / f"{session['session_id']}.json"
+        with open(session_file, 'w', encoding='utf-8') as f:
+            json.dump(session, f, ensure_ascii=False, indent=2)
+        system.collect_feedback(session["session_id"], overall_score=4)  # avg=4
+
+        new_adj = system.strategies["intensity_adjustments"]["medium"]
+        assert new_adj["consecutive_failures"] == 0
+        assert new_adj["multiplier"] == 1.2  # success 不变
+
+
+class TestTargetedAdvice:
+    """测试针对性建议"""
+
+    def test_targeted_advice_high_mc(self, tmp_path):
+        """高连续匹配应生成句式重组建议"""
+        system = FeedbackSystem(tmp_path)
+        suggestions = system.get_rewrite_suggestions("test", "medium", current_metrics={
+            "max_consecutive": 10,
+            "trigram_precision": 0.15
+        })
+        assert "targeted_advice" in suggestions
+        assert "priority_techniques" in suggestions
+        assert len(suggestions["targeted_advice"]) > 0
+        assert len(suggestions["priority_techniques"]) > 0
+
+    def test_targeted_advice_high_tri(self, tmp_path):
+        """高三元组精度应生成结构调整建议"""
+        system = FeedbackSystem(tmp_path)
+        suggestions = system.get_rewrite_suggestions("test", "medium", current_metrics={
+            "max_consecutive": 3,
+            "trigram_precision": 0.25
+        })
+        assert len(suggestions["targeted_advice"]) > 0
 
 
 if __name__ == "__main__":

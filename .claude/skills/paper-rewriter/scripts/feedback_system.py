@@ -112,11 +112,12 @@ class FeedbackSystem:
                 "synonym_replacement": {"success": 0, "total": 0},
                 "word_order_change": {"success": 0, "total": 0}
             },
+            "technique_combinations": {},
             "domain_patterns": {},
             "intensity_adjustments": {
-                "light": {"multiplier": 1.0},
-                "medium": {"multiplier": 1.0},
-                "heavy": {"multiplier": 1.0}
+                "light": {"multiplier": 1.0, "consecutive_failures": 0, "consecutive_successes": 0},
+                "medium": {"multiplier": 1.0, "consecutive_failures": 0, "consecutive_successes": 0},
+                "heavy": {"multiplier": 1.0, "consecutive_failures": 0, "consecutive_successes": 0}
             },
             "problem_patterns": [],
             "last_updated": datetime.now().isoformat()
@@ -281,6 +282,22 @@ class FeedbackSystem:
                 if avg_score >= 4:
                     self.strategies["technique_effectiveness"][tech_type]["success"] += 1
 
+        # 3b. 学习技巧组合
+        is_success = avg_score >= 4  # 默认，后续自适应学习率可能覆盖
+        techniques_used = list(set(
+            c.get("type", "synonym_replacement")
+            for c in session.get("changes_made", [])
+        ))
+        if len(techniques_used) >= 2:
+            from itertools import combinations
+            for t1, t2 in combinations(sorted(techniques_used), 2):
+                combo_key = f"{t1}+{t2}"
+                if combo_key not in self.strategies["technique_combinations"]:
+                    self.strategies["technique_combinations"][combo_key] = {"success": 0, "total": 0}
+                self.strategies["technique_combinations"][combo_key]["total"] += 1
+                if is_success:
+                    self.strategies["technique_combinations"][combo_key]["success"] += 1
+
         # 3. 学习领域模式
         if domain not in self.strategies["domain_patterns"]:
             self.strategies["domain_patterns"][domain] = {
@@ -302,26 +319,48 @@ class FeedbackSystem:
             # 只保留最近的10个问题
             pattern["common_issues"] = pattern["common_issues"][-10:]
 
-        # 4. 学习强度调整
-        if avg_score < 3:
-            # 低分：可能需要调整强度
-            current_mult = self.strategies["intensity_adjustments"][intensity]["multiplier"]
-            self.strategies["intensity_adjustments"][intensity]["multiplier"] = min(
-                1.5, current_mult + 0.05
-            )
-        elif avg_score > 4:
-            # 高分：可以稍微降低强度
-            current_mult = self.strategies["intensity_adjustments"][intensity]["multiplier"]
-            self.strategies["intensity_adjustments"][intensity]["multiplier"] = max(
-                0.5, current_mult - 0.02
-            )
+        # 4. 自适应学习率
+        adjustment = self.strategies["intensity_adjustments"][intensity]
+        if "consecutive_failures" not in adjustment:
+            adjustment["consecutive_failures"] = 0
+        if "consecutive_successes" not in adjustment:
+            adjustment["consecutive_successes"] = 0
+
+        verdict = "success"  # 默认
+        if session.get("metrics"):
+            eval_result = auto_evaluate(session["metrics"])
+            verdict = eval_result["verdict"]
+            is_success = eval_result["is_success"]
+
+        if not is_success:
+            count = adjustment["consecutive_failures"]
+            step = min(0.10, 0.05 + count * 0.01)
+            adjustment["multiplier"] = min(1.5, adjustment["multiplier"] + step)
+            adjustment["consecutive_failures"] = count + 1
+            adjustment["consecutive_successes"] = 0
+        elif verdict == "excellent":
+            count = adjustment["consecutive_successes"]
+            step = max(0.01, 0.02 - count * 0.003)
+            adjustment["multiplier"] = max(0.5, adjustment["multiplier"] - step)
+            adjustment["consecutive_successes"] = count + 1
+            adjustment["consecutive_failures"] = 0
+        else:  # success
+            adjustment["consecutive_failures"] = 0
+            adjustment["consecutive_successes"] = 0
 
         # 5. 记录问题模式
         if feedback.get("improved") and avg_score < 3:
+            failure_type = "none"
+            if session.get("metrics"):
+                eval_result = auto_evaluate(session["metrics"])
+                failure_type = classify_failure(session["metrics"], eval_result["verdict"])
             self.strategies["problem_patterns"].append({
                 "issue": feedback["improved"],
+                "failure_type": failure_type,
                 "domain": domain,
                 "intensity": intensity,
+                "max_consecutive": session.get("metrics", {}).get("max_consecutive", 0),
+                "trigram_precision": session.get("metrics", {}).get("trigram_precision", 0),
                 "timestamp": session.get("timestamp")
             })
             # 只保留最近的20个问题模式
@@ -340,7 +379,8 @@ class FeedbackSystem:
     def get_rewrite_suggestions(
         self,
         domain: str = "general",
-        intensity: str = "medium"
+        intensity: str = "medium",
+        current_metrics: dict = None
     ) -> dict:
         """
         获取改写建议（基于学习到的策略）
@@ -348,6 +388,7 @@ class FeedbackSystem:
         参数:
             domain: 学科领域
             intensity: 改写强度
+            current_metrics: 当前文本的相似度指标（max_consecutive, trigram_precision）
 
         返回:
             改写建议
@@ -357,7 +398,10 @@ class FeedbackSystem:
             "effective_techniques": [],
             "intensity_multiplier": 1.0,
             "domain_issues": [],
-            "new_terms_to_preserve": []
+            "new_terms_to_preserve": [],
+            "targeted_advice": [],
+            "priority_techniques": [],
+            "effective_combinations": [],
         }
 
         # 1. 获取偏好词汇
@@ -387,6 +431,56 @@ class FeedbackSystem:
 
         # 5. 获取新术语
         suggestions["new_terms_to_preserve"] = self.strategies.get("new_terms", [])[-10:]
+
+        # 6. 有效技巧组合
+        for combo_key, data in self.strategies.get("technique_combinations", {}).items():
+            if data["total"] >= 2:
+                success_rate = data["success"] / data["total"]
+                if success_rate >= 0.7:
+                    suggestions["effective_combinations"].append({
+                        "combination": combo_key,
+                        "success_rate": round(success_rate, 2)
+                    })
+
+        # 7. 基于历史问题模式生成建议
+        recent_problems = [
+            p for p in self.strategies.get("problem_patterns", [])
+            if p.get("domain") == domain
+        ][-5:]
+
+        failure_type_advice = {
+            "consecutive_too_long": "该学科历史改写中多次出现超长连续匹配，建议优先使用 voice_conversion + clause_insertion",
+            "structure_too_similar": "该学科历史改写中句式相似度偏高，建议加强结构调整",
+            "consecutive_risk": "该学科历史改写中连续匹配接近阈值，建议增加句式变化",
+            "trigram_risk": "该学科历史改写中三元组重叠率偏高，建议加强结构调整",
+        }
+        seen_types = set()
+        for problem in recent_problems:
+            ft = problem.get("failure_type", "")
+            if ft in failure_type_advice and ft not in seen_types:
+                suggestions["targeted_advice"].append(failure_type_advice[ft])
+                seen_types.add(ft)
+
+        # 8. 基于当前文本指标生成建议
+        if current_metrics:
+            mc = current_metrics.get("max_consecutive", 0)
+            tri = current_metrics.get("trigram_precision", 0)
+
+            if mc >= 8:
+                suggestions["priority_techniques"] = ["voice_conversion", "clause_insertion", "word_order_change"]
+                suggestions["targeted_advice"].append(
+                    f"存在 {mc} 词连续匹配（超过 Turnitin 阈值），必须使用句式重组打破结构"
+                )
+            elif mc >= 5:
+                suggestions["priority_techniques"] = ["voice_conversion", "synonym_replacement", "word_order_change"]
+                suggestions["targeted_advice"].append(
+                    f"连续匹配 {mc} 词，接近阈值，建议使用句式重组+同义词替换"
+                )
+            elif tri >= 0.20:
+                suggestions["priority_techniques"] = ["synonym_replacement", "word_order_change"]
+                suggestions["targeted_advice"].append(
+                    f"三元组精度 {tri:.1%}，需要改变句子结构和用词"
+                )
 
         return suggestions
 
