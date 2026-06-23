@@ -43,10 +43,11 @@ def test_score_paragraph_empty_text():
 
 
 def test_score_paragraph_weights_sum_to_one():
-    """各维度权重之和应为 1.0（不含结构维度）。"""
-    # syntax=0.2, vocabulary=0.25, ai_traces=0.2, chinese=0.2 = 0.85
-    # 结构维度通过 score_paragraphs 全局修正添加 (0.15)
-    # score_paragraph 内部的 base risk 权重为 0.85，结构在 score_paragraphs 中补充到 1.0
+    """各维度权重之和应为 1.0（不含结构维度）。
+
+    syntax=0.2, vocabulary=0.3, ai_traces=0.25, chinese=0.25 = 1.0
+    结构维度通过 score_paragraphs 全局修正叠加（最多 +0.15，cap 在 1.0）。
+    """
     text = "这是一段测试文本，用于验证权重计算。"
     result = score_paragraph(text, "body", [])
     assert 0.0 <= result["risk"] <= 1.0

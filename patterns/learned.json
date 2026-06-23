@@ -1,4 +1,5 @@
 {
   "patterns": [],
-  "protected_terms": []
+  "protected_terms": [],
+  "success_strategies": []
 }

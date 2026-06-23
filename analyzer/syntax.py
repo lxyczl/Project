@@ -25,13 +25,13 @@ def analyze_syntax(text: str) -> dict:
         if cv < 0.3:
             issues.append({"type": "uniform_sentence_length", "detail": f"句长变异系数 {cv:.2f}，过于均匀"})
 
-    # 2. 并列结构频率
-    parallel_markers = len(re.findall(r'[，,].*[，,].*[，,]', text))
+    # 2. 并列结构频率 — 用非贪婪匹配避免回溯
+    parallel_markers = len(re.findall(r'[，,].*?[，,].*?[，,]', text))
     if parallel_markers > len(sentences) * 0.5:
         issues.append({"type": "excessive_parallelism", "detail": f"并列结构过多: {parallel_markers} 处"})
 
-    # 3. 从句嵌套深度 — 简单估算
-    deep_nested = len(re.findall(r'的.*的.*的.*的', text))
+    # 3. 从句嵌套深度 — 限制在句内匹配，避免跨句回溯
+    deep_nested = len(re.findall(r'的[^。，！？；\n]{0,15}的[^。，！？；\n]{0,15}的[^。，！？；\n]{0,15}的', text))
     if deep_nested > 0:
         issues.append({"type": "deep_nesting", "detail": f"检测到 {deep_nested} 处深层嵌套"})
 

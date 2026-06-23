@@ -1,0 +1,22 @@
+{
+  "vocabulary_preferences": {},
+  "technique_effectiveness": {
+    "connector_replace": {"success": 0, "total": 0},
+    "sentence_restructure": {"success": 0, "total": 0},
+    "cliche_replace": {"success": 0, "total": 0},
+    "passive_to_active": {"success": 0, "total": 0},
+    "personal_voice_add": {"success": 0, "total": 0},
+    "paragraph_reorganize": {"success": 0, "total": 0}
+  },
+  "section_patterns": {},
+  "intensity_adjustments": {
+    "light": {"multiplier": 1.0},
+    "medium": {"multiplier": 1.0},
+    "heavy": {"multiplier": 1.0}
+  },
+  "problem_patterns": [],
+  "session_count": 0,
+  "total_paragraphs_rewritten": 0,
+  "total_risk_reduction": 0.0,
+  "last_updated": "2026-06-23T00:00:00"
+}
