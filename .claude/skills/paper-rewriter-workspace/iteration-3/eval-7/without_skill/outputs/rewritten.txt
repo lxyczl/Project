@@ -1,1 +1,0 @@
-The water flow rate Q was calculated using Equation (1) [1]. The Reynolds number Re > 4000 shows turbulent flow (Smith, 2020). The hydraulic conductivity K is given by K = QL/(AΔh) [2,3].

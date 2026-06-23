@@ -1,1 +1,0 @@
-The building uses much energy for heating during winter. The walls have bad insulation. We should decrease the energy consumption. The U-value of the wall is 0.5 W/(m²·K).

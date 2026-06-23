@@ -1,0 +1,42 @@
+{
+  "session_id": "2026-06-23-a1b2c3d4",
+  "timestamp": "2026-06-23T10:00:00Z",
+  "domain": "生态安全格局",
+  "intensity": "中度",
+  "section_type": "introduction",
+  "scores": {
+    "vocabulary": 4,
+    "sentence_structure": 5,
+    "terminology_preservation": 5,
+    "overall_satisfaction": 4
+  },
+  "feedback": {
+    "liked": "专业术语保留得很好",
+    "improved": "部分句子改写后不够自然",
+    "missing_terms": ["生态节点"],
+    "other_suggestions": "希望提供更多改写选项"
+  },
+  "original_text": "研究表明，城市化进程的加快导致了生态环境的恶化。",
+  "rewritten_text": "生态环境的恶化与城市化进程的加速密切相关，这一关系已得到众多研究的证实。",
+  "changes_made": [
+    {
+      "type": "句式重组",
+      "original": "研究表明，城市化进程的加快导致了生态环境的恶化",
+      "rewritten": "生态环境的恶化与城市化进程的加速密切相关"
+    },
+    {
+      "type": "同义词替换",
+      "original": "导致了",
+      "rewritten": "密切相关"
+    }
+  ],
+  "metrics": {
+    "unigram_overlap": 0.45,
+    "bigram_overlap": 0.12,
+    "trigram_overlap": 0.05,
+    "max_consecutive": 3,
+    "vocabulary_diversity": 0.85,
+    "original_char_count": 22,
+    "rewritten_char_count": 28
+  }
+}

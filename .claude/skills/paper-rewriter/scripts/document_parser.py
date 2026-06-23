@@ -61,7 +61,7 @@ def parse_docx(file_path: str) -> dict:
 
 def identify_sections(paragraphs: list) -> dict:
     """
-    识别论文章节
+    识别论文章节（支持多种格式：带编号/不带编号/全大写/混合大小写）
 
     参数:
         paragraphs: 段落列表
@@ -81,86 +81,78 @@ def identify_sections(paragraphs: list) -> dict:
         "references": []
     }
 
+    # 章节标题匹配模式（支持编号/无编号/大小写，要求整行匹配）
+    section_patterns = [
+        (r'^(?:\d+\.?\s*)?introduction\s*$', "introduction"),
+        (r'^(?:\d+\.?\s*)?(?:materials?\s+and\s+)?methods?\s*$', "methods"),
+        (r'^(?:\d+\.?\s*)?methodology\s*$', "methods"),
+        (r'^(?:\d+\.?\s*)?(?:study\s+area|data\s+(?:and\s+)?(?:sources?|collection))\s*$', "methods"),
+        (r'^(?:\d+\.?\s*)?results?\s*$', "results"),
+        (r'^(?:\d+\.?\s*)?discussion\s*$', "discussion"),
+        (r'^(?:\d+\.?\s*)?conclusions?\s*$', "conclusion"),
+        (r'^(?:\d+\.?\s*)?(?:summary\s+and\s+)?conclusions?\s*$', "conclusion"),
+        (r'^references?\s*$', "references"),
+    ]
+
     current_section = None
 
     for para in paragraphs:
-        text = para["text"].lower()
+        text = para["text"].strip()
+        text_lower = text.lower()
 
-        # 识别标题
+        # 识别标题（第一个非空段落）
         if para["index"] == 0 and not sections["title"]:
-            sections["title"] = para["text"]
+            sections["title"] = text
             continue
 
         # 识别摘要
-        if ("abstract" in text or "摘要" in text) and len(para["text"]) < 200:
+        if re.match(r'^(?:\d+\.?\s*)?abstract\b', text_lower) or text_lower == "摘要":
             current_section = "abstract"
-            # 如果段落本身包含摘要内容
-            if len(para["text"]) > 100:
-                sections["abstract"] = para["text"]
+            # 提取摘要内容（去掉 "Abstract:" 前缀）
+            abstract_content = re.sub(r'^(?:\d+\.?\s*)?abstract\s*[:：]?\s*', '', text, flags=re.IGNORECASE).strip()
+            if len(abstract_content) > 50:
+                sections["abstract"] = abstract_content
             continue
 
         # 识别关键词
-        if "keywords" in text and len(para["text"]) < 200:
+        if re.match(r'^(?:\d+\.?\s*)?keywords?\b', text_lower) or text_lower.startswith("关键词"):
             current_section = "keywords"
-            sections["keywords"] = para["text"]
+            sections["keywords"] = text
             continue
 
-        # 识别引言
-        if re.match(r'^1\.?\s*introduction', text) or text.startswith("1.introduction"):
-            current_section = "introduction"
-            continue
-
-        # 识别方法
-        if re.match(r'^2\.?\s*(study area|data|methodology)', text):
-            current_section = "methods"
-            continue
-
-        # 识别结果
-        if re.match(r'^3\.?\s*results?', text):
-            current_section = "results"
-            continue
-
-        # 识别讨论
-        if re.match(r'^4\.?\s*discussion', text):
-            current_section = "discussion"
-            continue
-
-        # 识别结论
-        if re.match(r'^5\.?\s*conclusion', text):
-            current_section = "conclusion"
-            continue
-
-        # 识别参考文献
-        if re.match(r'^references?$', text) or text.startswith("references"):
+        # 识别参考文献（优先于其他章节，避免 "References" 被误匹配）
+        if re.match(r'^references?\b', text_lower):
             current_section = "references"
+            continue
+
+        # 识别其他章节
+        matched = False
+        for pattern, section_name in section_patterns:
+            if re.match(pattern, text_lower):
+                current_section = section_name
+                matched = True
+                break
+
+        if matched:
             continue
 
         # 添加到当前章节
         if current_section and current_section in sections:
             if isinstance(sections[current_section], list):
-                sections[current_section].append(para["text"])
+                sections[current_section].append(text)
             elif sections[current_section] is None:
-                sections[current_section] = para["text"]
+                sections[current_section] = text
 
-    # 处理摘要（可能是多段）
+    # 处理摘要（可能是多段，或嵌入在 "Abstract:" 段落中）
     if sections["abstract"] is None:
-        # 尝试从开头提取
         for para in paragraphs[:20]:
-            text = para["text"].lower()
-            # 检查是否是摘要段落
-            if "abstract" in text and len(para["text"]) > 100:
-                # 提取摘要内容（去掉"Abstract:"前缀）
-                abstract_text = para["text"]
-                if "abstract" in abstract_text.lower():
-                    # 找到"Abstract:"后的内容
-                    idx = abstract_text.lower().find("abstract")
-                    if idx >= 0:
-                        abstract_text = abstract_text[idx + len("abstract"):].strip()
-                        # 去掉冒号
-                        if abstract_text.startswith(":") or abstract_text.startswith("："):
-                            abstract_text = abstract_text[1:].strip()
-                sections["abstract"] = abstract_text
-                break
+            text_lower = para["text"].lower()
+            if "abstract" in text_lower and len(para["text"]) > 100:
+                idx = text_lower.find("abstract")
+                abstract_text = para["text"][idx + len("abstract"):].strip(" :：")
+                if len(abstract_text) > 50:
+                    sections["abstract"] = abstract_text
+                    break
 
     return sections
 

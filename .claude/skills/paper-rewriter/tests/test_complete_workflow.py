@@ -1,98 +1,110 @@
-#!/usr/bin/env python3
 """
 完整工作流测试
-测试从文档解析到改写到反馈的完整流程
+测试从相似度分析到反馈的完整流程
 """
-
-import sys
+import pytest
 from pathlib import Path
+import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 from rewrite_with_feedback import RewriteWithFeedback
-from document_parser import parse_document, get_text_for_rewrite
+from similarity_calculator import calculate_similarity, format_report
 
 
-def main():
-    """主测试函数"""
-    print("=" * 60)
-    print("完整工作流测试")
-    print("=" * 60)
+class TestCompleteWorkflow:
+    """完整工作流测试"""
 
-    system = RewriteWithFeedback()
+    def test_analyze_and_record(self, tmp_path):
+        """分析改写结果并记录会话"""
+        system = RewriteWithFeedback(tmp_path)
 
-    # 测试1: 解析文档
-    print("\n--- 测试1: 解析文档 ---")
-    paper_path = r"E:\Desktop\Manuscript星儿修订版(1) - 副本.docx"
-    result = parse_document(paper_path)
+        original = "The results show that the method is effective and reliable."
+        rewritten = "The findings demonstrate that the approach exhibits considerable efficacy and dependability."
 
-    if "error" in result:
-        print(f"错误: {result['error']}")
-        return
+        analysis = system.analyze_rewrite(
+            original, rewritten,
+            domain="生态水文",
+            intensity="medium",
+            section_type="abstract"
+        )
 
-    print(f"文件: {result['file']}")
-    print(f"段落数: {result['paragraph_count']}")
-    for name, content in result["sections"].items():
-        if content:
-            if isinstance(content, list):
-                print(f"  {name}: {len(content)} 段落")
-            else:
-                print(f"  {name}: {content[:50]}...")
+        assert "session_id" in analysis
+        assert "similarity" in analysis
+        assert "composite_score" in analysis
+        assert "report" in analysis
+        assert 0 <= analysis["composite_score"] <= 100
 
-    # 测试2: 获取摘要
-    print("\n--- 测试2: 获取摘要 ---")
-    abstract = get_text_for_rewrite(result, "abstract")
-    print(f"摘要长度: {len(abstract)} 字符")
+    def test_analyze_then_feedback(self, tmp_path):
+        """分析后提交反馈"""
+        system = RewriteWithFeedback(tmp_path)
 
-    # 测试3: 模拟改写并分析
-    print("\n--- 测试3: 模拟改写并分析 ---")
-    abstract_rewritten = """Rapid urbanization and intensive resource extraction have progressively deteriorated global ecosystems, especially within arid and semi-arid regions. While ecological security pattern (ESP) construction has emerged as a widely accepted strategy for maintaining ecosystem equilibrium, current methodologies predominantly address surface-level conditions and systematically neglect subsurface systems—specifically groundwater—which represents a critical constraining factor in dryland environments."""
+        original = "The study area is located in the north of China."
+        rewritten = "The research region is situated in northern China."
 
-    analysis = system.analyze_rewrite(
-        abstract[:500],
-        abstract_rewritten,
-        domain="生态安全格局",
-        intensity="heavy",
-        section_type="abstract"
-    )
+        analysis = system.analyze_rewrite(original, rewritten, domain="生态安全格局")
 
-    print(f"会话ID: {analysis['session_id']}")
-    print(f"综合评分: {analysis['composite_score']}/100")
-    sim = analysis["similarity"]
-    print(f"  LCS 比率: {sim['lcs_ratio']:.1%}")
-    print(f"  三元组精度: {sim['trigram_precision']:.1%}")
-    print(f"  最长连续匹配: {sim['max_consecutive']} 词")
+        feedback = system.submit_feedback(
+            session_id=analysis["session_id"],
+            vocabulary_score=4,
+            structure_score=5,
+            terminology_score=5,
+            overall_score=4,
+            liked="术语保留完整",
+            improved="可以增加更多句式变化"
+        )
 
-    # 测试4: 提交反馈
-    print("\n--- 测试4: 提交反馈 ---")
-    feedback = system.submit_feedback(
-        session_id=analysis["session_id"],
-        vocabulary_score=5,
-        structure_score=4,
-        terminology_score=5,
-        overall_score=4,
-        liked="专业术语保留得很好",
-        improved="部分句子改写后不够自然",
-        missing_terms=["生态安全格局", "地下水脆弱性"],
-        suggestions="希望提供更多改写选项"
-    )
-    print(f"平均分: {sum(feedback['scores'].values()) / len(feedback['scores']):.1f}/5")
+        assert feedback["scores"]["overall_satisfaction"] == 4
 
-    # 测试5: 获取改写建议
-    print("\n--- 测试5: 获取改写建议 ---")
-    suggestions = system.get_suggestions("生态安全格局", "heavy")
-    print(f"推荐技术: {[t['technique'] for t in suggestions['effective_techniques']]}")
-    print(f"新术语: {suggestions['new_terms_to_preserve'][:5]}")
+    def test_get_suggestions_after_feedback(self, tmp_path):
+        """反馈后获取建议"""
+        system = RewriteWithFeedback(tmp_path)
 
-    # 测试6: 查看学习报告
-    print("\n--- 测试6: 学习报告 ---")
-    report = system.get_strategy_report()
-    print(report[:500] + "..." if len(report) > 500 else report)
+        # 先做一次改写+反馈
+        session = system.analyze_rewrite(
+            "The model was used to calculate water yield.",
+            "The model was employed to compute water yield.",
+            domain="生态水文"
+        )
+        system.submit_feedback(session["session_id"], overall_score=5, missing_terms=["蒸散发"])
 
-    print("\n" + "=" * 60)
-    print("✅ 所有测试通过")
-    print("=" * 60)
+        # 获取建议
+        suggestions = system.get_suggestions("生态水文", "medium")
+        assert "effective_techniques" in suggestions
+        assert "intensity_multiplier" in suggestions
+        assert "蒸散发" in suggestions["new_terms_to_preserve"]
+
+    def test_strategy_report_after_sessions(self, tmp_path):
+        """多次会话后生成策略报告"""
+        system = RewriteWithFeedback(tmp_path)
+
+        texts = [
+            ("The results show effectiveness", "The findings demonstrate efficacy"),
+            ("The method is reliable", "The approach is dependable"),
+            ("The study found that", "The investigation revealed that"),
+        ]
+
+        for orig, rew in texts:
+            analysis = system.analyze_rewrite(orig, rew, domain="生态水文")
+            system.submit_feedback(analysis["session_id"], overall_score=4)
+
+        report = system.get_strategy_report()
+        assert "反馈学习策略报告" in report
+        assert "生态水文" in report
+
+    def test_high_similarity_detected(self):
+        """相同文本应该有高相似度"""
+        text = "The results show that the method is effective."
+        result = calculate_similarity(text, text)
+        assert result["composite_score"] >= 80
+
+    def test_low_similarity_for_paraphrased(self):
+        """充分改写应该有低相似度"""
+        original = "The results show that the method is effective."
+        rewritten = "A comprehensive analysis was performed, revealing that the approach demonstrates considerable efficacy."
+        result = calculate_similarity(original, rewritten)
+        assert result["composite_score"] < 50
 
 
 if __name__ == "__main__":
-    main()
+    pytest.main([__file__, "-v"])

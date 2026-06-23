@@ -73,7 +73,7 @@ def parse_turnitin_report(report_text: str) -> dict:
 
 def detect_color(text: str) -> Optional[str]:
     """
-    检测文本中的颜色标记
+    检测文本中的颜色标记（支持多种 Turnitin 报告格式）
 
     参数:
         text: 文本内容
@@ -81,34 +81,53 @@ def detect_color(text: str) -> Optional[str]:
     返回:
         颜色名称或 None
     """
-    # HTML 颜色标记
-    html_patterns = {
-        "red": r'<span[^>]*style="[^"]*color:\s*red[^"]*"[^>]*>.*?</span>',
-        "orange": r'<span[^>]*style="[^"]*color:\s*orange[^"]*"[^>]*>.*?</span>',
-        "yellow": r'<span[^>]*style="[^"]*color:\s*yellow[^"]*"[^>]*>.*?</span>',
-        "green": r'<span[^>]*style="[^"]*color:\s*green[^"]*"[^>]*>.*?</span>',
-        "blue": r'<span[^>]*style="[^"]*color:\s*blue[^"]*"[^>]*>.*?</span>'
+    # ── 1. Turnitin HTML 格式（真实报告）──
+    # CSS class: highlight-red, highlight__red, match-red, similarity-red 等
+    class_patterns = {
+        "red": r'class="[^"]*(?:highlight|match|similarity)[_-]?red[^"]*"',
+        "orange": r'class="[^"]*(?:highlight|match|similarity)[_-]?orange[^"]*"',
+        "yellow": r'class="[^"]*(?:highlight|match|similarity)[_-]?yellow[^"]*"',
+        "green": r'class="[^"]*(?:highlight|match|similarity)[_-]?green[^"]*"',
+        "blue": r'class="[^"]*(?:highlight|match|similarity)[_-]?blue[^"]*"',
     }
-
-    for color, pattern in html_patterns.items():
+    for color, pattern in class_patterns.items():
         if re.search(pattern, text, re.IGNORECASE):
             return color
 
-    # 纯文本颜色标记（如 [RED], [ORANGE] 等）
+    # ── 2. 内联样式：background-color / color ──
+    # 支持 hex (#ff0000, #f00), 命名色, rgb()
+    inline_patterns = {
+        "red": r'(?:background-)?color:\s*(?:red|#ff0000|#f00(?:000)?|rgb\s*\(\s*255)',
+        "orange": r'(?:background-)?color:\s*(?:orange|#ffa500|#ff[89a][0-9a-f]{3})',
+        "yellow": r'(?:background-)?color:\s*(?:yellow|#ffff00|#ff0|#ffee00)',
+        "green": r'(?:background-)?color:\s*(?:green|#00[89a-f]000|#0f0)',
+        "blue": r'(?:background-)?color:\s*(?:blue|#0000ff|#00f)',
+    }
+    for color, pattern in inline_patterns.items():
+        if re.search(pattern, text, re.IGNORECASE):
+            return color
+
+    # ── 3. Turnitin 数字编号（1-6 对应不同颜色）──
+    # 有些 Turnitin 导出用 data-color="1" 等
+    num_match = re.search(r'data-color="(\d)"', text)
+    if num_match:
+        num_color_map = {"1": "red", "2": "orange", "3": "yellow", "4": "green", "5": "blue", "6": "blue"}
+        return num_color_map.get(num_match.group(1))
+
+    # ── 4. 纯文本标记 [RED], [ORANGE] 等 ──
     text_patterns = {
         "red": r'\[RED\]|\[红色\]',
         "orange": r'\[ORANGE\]|\[橙色\]',
         "yellow": r'\[YELLOW\]|\[黄色\]',
         "green": r'\[GREEN\]|\[绿色\]',
-        "blue": r'\[BLUE\]|\[蓝色\]'
+        "blue": r'\[BLUE\]|\[蓝色\]',
     }
-
     for color, pattern in text_patterns.items():
         if re.search(pattern, text, re.IGNORECASE):
             return color
 
-    # 基于相似度百分比推断
-    similarity_match = re.search(r'(\d+)%\s*similarity', text, re.IGNORECASE)
+    # ── 5. 基于相似度百分比推断 ──
+    similarity_match = re.search(r'(\d+)%\s*(?:similarity|match|plagiarism)', text, re.IGNORECASE)
     if similarity_match:
         similarity = int(similarity_match.group(1))
         if 25 <= similarity <= 49:

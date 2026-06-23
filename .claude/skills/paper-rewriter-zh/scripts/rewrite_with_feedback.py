@@ -14,11 +14,11 @@ from similarity_calculator import calculate_similarity, format_report, find_sent
 class RewriteWithFeedback:
     """改写分析 + 反馈系统"""
 
-    def __init__(self, skill_dir: Path = None):
-        if skill_dir is None:
-            skill_dir = Path(__file__).parent.parent
-        self.skill_dir = skill_dir
-        self.feedback_system = FeedbackSystem(skill_dir)
+    def __init__(self, data_dir: Path = None):
+        if data_dir is None:
+            data_dir = Path(__file__).parent.parent / "feedback"
+        self.data_dir = data_dir
+        self.feedback_system = FeedbackSystem(data_dir)
 
     def analyze_rewrite(
         self,

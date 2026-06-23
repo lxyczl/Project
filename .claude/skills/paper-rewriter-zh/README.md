@@ -8,8 +8,10 @@
 - **3种强度级别**: 轻度、中度、重度
 - **19个学科领域**: 生态水文、土木水利、绿色建筑、建筑节能等
 - **专业术语保护**: 自动识别并保留专业术语、引用、公式
-- **相似度检测**: 内置相似度计算器评估改写效果
-- **反馈学习**: 自动记录改写结果和用户反馈，持续优化改写策略
+- **相似度检测**: 内置相似度计算器评估改写效果（支持 jieba 词级分词）
+- **一键分析**: `run_pipeline.py` 自动完成分析→热点定位→迭代判断
+- **反馈学习**: 自动记录改写结果，数据存项目目录 `.paper-rewriter/`
+- **jieba 自动检测**: 缺失时自动安装，确保词级分词可用
 
 ## 可选依赖
 
@@ -58,14 +60,18 @@ paper-rewriter-zh/
 │   ├── synonyms.md             # 完整同义词表
 │   └── edge_cases.md           # 边界情况处理
 ├── scripts/
+│   ├── run_pipeline.py          # 一键分析入口（推荐）
 │   ├── similarity_calculator.py # 相似度计算脚本
-│   ├── feedback_system.py      # 反馈学习引擎
+│   ├── feedback_system.py       # 反馈学习引擎
 │   └── rewrite_with_feedback.py # CLI 编排器
-└── feedback/
-    ├── feedback_template.json  # 反馈数据模板
-    ├── sessions/               # 改写会话记录（自动累积）
+└── feedback/                    # skill 内置反馈数据（默认）
+
+项目目录结构（反馈数据存项目下）：
+your-project/
+└── .paper-rewriter/
+    ├── sessions/               # 改写会话记录
     └── learning/
-        └── strategies.json     # 学习到的策略（跨会话持久化）
+        └── strategies.json     # 项目级策略
 ```
 
 ## 改写技巧

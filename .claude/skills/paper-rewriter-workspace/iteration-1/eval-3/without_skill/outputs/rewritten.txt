@@ -1,1 +1,0 @@
-In the last few years, deep learning has been broadly applied to computer vision. CNNs are a common choice for image classification. They can automatically learn features from data.

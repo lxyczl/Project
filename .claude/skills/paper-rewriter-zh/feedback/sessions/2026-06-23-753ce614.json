@@ -1,0 +1,30 @@
+{
+  "session_id": "2026-06-23-753ce614",
+  "timestamp": "2026-06-23T18:09:03.675130",
+  "domain": "生态水文",
+  "intensity": "中度",
+  "section_type": "unknown",
+  "original_text": "本研究采用蒸散发和水量平衡方法，通过InVEST模型对产水服务进行分析。研究表明该方法有效。",
+  "rewritten_text": "本探究运用蒸发蒸腾过程和水分收支方法，借助InVEST模型对水源供给服务进行剖析。研究显示此方法可行。",
+  "changes_made": [],
+  "scores": null,
+  "feedback": null,
+  "metrics": {
+    "unigram_overlap": 0.476,
+    "bigram_overlap": 0.174,
+    "trigram_overlap": 0.0,
+    "max_consecutive": 4,
+    "vocabulary_diversity": 0.926,
+    "original_char_count": 37,
+    "rewritten_char_count": 42,
+    "token_mode": "word",
+    "content_word_overlap": 0.45
+  },
+  "auto_evaluation": {
+    "verdict": "excellent",
+    "score": 85,
+    "is_success": true,
+    "reason": "连续4字匹配，三元组0.0%，改写效果优秀"
+  },
+  "auto_learned": true
+}

@@ -1,7 +1,0 @@
-pyproject.toml
-aigc_rewriter.egg-info/PKG-INFO
-aigc_rewriter.egg-info/SOURCES.txt
-aigc_rewriter.egg-info/dependency_links.txt
-aigc_rewriter.egg-info/entry_points.txt
-aigc_rewriter.egg-info/requires.txt
-aigc_rewriter.egg-info/top_level.txt

@@ -4,21 +4,112 @@ This document describes the advanced features of the Paper Rewriter skill.
 
 ## Table of Contents
 
-1. [Turnitin Report Parsing](#turnitin-report-parsing)
-2. [Multiple Rewrite Options](#multiple-rewrite-options)
-3. [Interactive Approval Mode](#interactive-approval-mode)
-4. [Export Functionality](#export-functionality)
-5. [Style Consistency Checking](#style-consistency-checking)
-6. [Grammar Checking](#grammar-checking)
-7. [Progress Tracking](#progress-tracking)
-8. [Feedback Collection and Learning](#feedback-collection-and-learning)
-9. [Batch Processing](#batch-processing)
+1. [Risk Analysis Engine](#risk-analysis-engine)
+2. [Turnitin Report Parsing](#turnitin-report-parsing)
+3. [Feedback Collection and Learning](#feedback-collection-and-learning)
+4. [Batch Processing](#batch-processing)
+
+---
+
+## Risk Analysis Engine
+
+Analyze text for AIGC detection risk before rewriting. The engine evaluates 4 dimensions and produces actionable risk scores.
+
+### Architecture
+
+```
+analyze.py (CLI)
+    analyzer/
+    ├── syntax.py        # 句长方差、被动语态、并列结构、从句嵌套
+    ├── vocabulary.py    # TTR、连接词频率、套话检测（50+ 规则）
+    ├── ai_traces.py     # 流畅度、突发性、个人表达、句首模式
+    ├── english.py       # 冠词过度、模糊限定、名词化、冗长短语
+    ├── structure.py     # 段落长度方差、段首模式（全文级）
+    ├── paragraphs.py    # 段落切分、章节识别
+    ├── patterns.py      # 模式库加载器（builtin/user/learned）
+    └── scorer.py        # 四维度加权评分 + 章节优先级
+```
+
+### 4 Dimensions
+
+| 维度 | 权重 | 检测内容 |
+|------|------|----------|
+| Syntax | 0.20 | 句长方差、被动语态、并列结构、从句嵌套 |
+| Vocabulary | 0.30 | TTR、连接词、套话/模板化表达 |
+| AI Traces | 0.25 | 流畅度、突发性、个人表达、句首模式 |
+| English | 0.25 | 冠词过度、模糊限定、名词化、冗长短语 |
+
+### 17 Risk Types
+
+Syntax: `uniform_sentence_length`, `excessive_passive`, `excessive_parallelism`, `deep_nesting`
+Vocabulary: `low_ttr`, `connector_overuse`, `cliche_detected`
+AI Traces: `too_fluent`, `low_burstiness`, `no_personal_voice`, `monotonous_openings`
+English: `excessive_the`, `excessive_hedging`, `excessive_nominalization`, `verbose_phrases`
+Structure: `uniform_para_length`, `uniform_para_start`
+
+### Usage
+
+```bash
+# 分析文本
+$PY analyze.py --text "Your text here"
+
+# 分析文件
+$PY analyze.py input.txt
+
+# 输出到文件
+$PY analyze.py input.txt -o result.json
+
+# 学习顽固 pattern（改写后仍存在的）
+$PY analyze.py --learn-stubborn comparison.json
+
+# 记录成功改写策略
+$PY analyze.py --learn-success comparison.json
+```
+
+### Output Format
+
+```json
+{
+  "overall_risk": 0.45,
+  "paragraphs": [
+    {
+      "index": 0,
+      "risk": 0.52,
+      "priority": 0.57,
+      "section_type": "introduction",
+      "issues": [
+        {"type": "cliche_detected", "detail": "Cliche phrases detected: in recent years"},
+        {"type": "connector_overuse", "detail": "Connector frequency 5/8=0.6, too high"}
+      ],
+      "suggestion": "Replace connectors and cliche phrases; Enrich vocabulary"
+    }
+  ]
+}
+```
+
+### Pattern Library
+
+模式库存储在 `patterns/` 目录：
+- `builtin.json` — 内置规则（50+ 条），包含套话、连接词、冗长短语、句式模板
+- `user.json` — 用户自定义规则（可选）
+- `learned.json` — 自动积累的顽固 pattern 和成功策略（可选）
+
+每条规则格式：
+```json
+{"id": "cliche_001", "type": "cliche", "match": "in recent years", "replacements": ["recently", "over the past decade"]}
+```
 
 ---
 
 ## Turnitin Report Parsing
 
 Parse Turnitin reports to identify high-priority sections. The skill automatically parses Turnitin reports when provided.
+
+### Supported Formats
+
+- HTML reports with CSS class or inline style color coding
+- Text reports with `[RED]`, `[ORANGE]` etc. markers
+- Percentage-based similarity indicators
 
 ### Color Codes
 
@@ -30,268 +121,75 @@ Parse Turnitin reports to identify high-priority sections. The skill automatical
 | 🟢 Green | Citation | CITATION | Keep as-is |
 | 🔵 Blue | 0% | NONE | No changes needed |
 
-### Processing Order
-
-1. Process red sections first (highest priority)
-2. Process orange sections next
-3. Process yellow sections if time permits
-4. Skip green and blue sections
-
 ### Intensity Mapping
 
 - Red sections → Heavy intensity
 - Orange sections → Medium intensity
 - Yellow sections → Light intensity
 
----
-
-## Multiple Rewrite Options
-
-Provide multiple rewrite options for each sentence.
-
 ### Usage
 
-When interactive mode is enabled, the skill provides 2-3 options:
+```bash
+# 从文件解析
+$PY scripts/turnitin_parser.py <report_file>
 
-```
-## Sentence: "The results show that the method is effective."
-
-### Option A (Light - 轻度改写)
-"The findings demonstrate that the approach is efficacious."
-
-**改动说明**:
-- 词汇替换: results→findings, show→demonstrate, method→approach, effective→efficacious
-- 句子结构: 保持不变
-- 改写程度: 30%
-
-### Option B (Medium - 中度改写)
-"The obtained results indicate that the methodology exhibits effectiveness."
-
-**改动说明**:
-- 词汇替换: results→obtained results, show→indicate, method→methodology, is effective→exhibits effectiveness
-- 句子结构: 添加 "obtained"，使用 "exhibits" 替代 "is"
-- 改写程度: 60%
-
-### Option C (Heavy - 重度改写)
-"Effectiveness of the methodology is evidenced by the obtained results."
-
-**改动说明**:
-- 词汇替换: 完全重组
-- 句子结构: 主被动转换，将 "effective" 提前作为主语
-- 改写程度: 90%
-
-## 推荐选择
-
-- **如果相似度较低 (<25%)**: 选择 Option A
-- **如果相似度中等 (25-50%)**: 选择 Option B
-- **如果相似度较高 (>50%)**: 选择 Option C
-
-请根据你的需求选择最合适的选项，或提供你自己的版本。
-```
-
----
-
-## Interactive Approval Mode
-
-Process changes one by one with user approval.
-
-### Usage
-
-When interactive mode is enabled:
-
-```
-## Change 1 of 10
-
-**Original**: "The study shows that social media has a big impact on young people."
-
-**Proposed**: "The investigation demonstrates that social media exerts a substantial influence on adolescents."
-
-**Reason**: Replaced "shows" with "demonstrates", "big impact" with "substantial influence", "young people" with "adolescents"
-
-**Options**:
-1. Accept this change
-2. Reject this change
-3. Modify this change
-4. Skip to next change
-```
-
-### User Decisions
-
-- **Accept**: Apply the change and move to next
-- **Reject**: Keep original and move to next
-- **Modify**: Let user edit the proposed change
-- **Skip**: Move to next change without deciding
-
-### Final Output
-
-After all changes are processed, generate the final rewritten text with:
-- Accepted changes applied
-- Rejected changes kept as original
-- Modified changes updated per user's edits
-
----
-
-## Export Functionality
-
-Export rewritten text to multiple formats.
-
-### Supported Formats
-
-| Format | Extension | Description |
-|--------|-----------|-------------|
-| Text | .txt | Plain text output (default) |
-| Word | .docx | Microsoft Word document |
-| LaTeX | .tex | LaTeX source file |
-| PDF | .pdf | PDF document |
-
-### Usage
-
-Export functionality is not currently available as a standalone script. For exporting, consider:
-- Copy the rewritten text directly into your document editor
-- Use Claude Code to help format the output in your preferred format
-
----
-
-## Style Consistency Checking
-
-Check for terminology consistency across the document. This is handled manually by reviewing:
-- Same concept using different terms
-- Different capitalization styles
-- Inconsistent abbreviation usage
-- Formal vs. informal language
-- Active vs. passive voice
-- Sentence length variation
-
----
-
-## Grammar Checking
-
-Grammar checking is performed manually or using external tools. Key areas to check:
-- Subject-verb agreement
-- Tense consistency within paragraphs
-- Article usage ("a" vs "an")
-- Proper use of academic language
-
-### 错误详情
-
-1. **subject_verb_agreement** (句子 5)
-   - 错误: 主谓不一致: 'the results shows'
-   - 建议: 建议改为: 'show'
-
-2. **article_usage** (句子 12)
-   - 错误: 冠词使用错误: 'a unique'
-   - 建议: 元音前应使用 'an'，建议改为 'an unique'
-
-### 整体评估
-⚠️ 良好：存在少量语法问题，建议修正
-```
-
----
-
-## Progress Tracking
-
-Track progress when rewriting long documents.
-
-### Usage
-
-When rewriting multiple paragraphs, the skill displays progress:
-
-```
-## Progress: 45% complete
-
-### Completed:
-- Paragraph 1: ✅ Rewritten (Heavy intensity)
-- Paragraph 2: ✅ Rewritten (Medium intensity)
-- Paragraph 3: ✅ Rewritten (Light intensity)
-
-### In Progress:
-- Paragraph 4: 🔄 Rewriting...
-
-### Remaining:
-- Paragraph 5: ⏳ Pending
-- Paragraph 6: ⏳ Pending
-- Paragraph 7: ⏳ Pending
-
-### Statistics:
-- Total paragraphs: 7
-- Completed: 3
-- In progress: 1
-- Remaining: 3
-- Estimated time remaining: 2 minutes
+# Python API
+from turnitin_parser import parse_turnitin_report
+result = parse_turnitin_report(report_html)
 ```
 
 ---
 
 ## Feedback Collection and Learning
 
-Collect user feedback to improve the skill over time.
+Collect user feedback to improve rewriting quality over time.
 
-### Feedback Collection
+### How It Works
 
-After each rewriting session, the skill asks:
+1. Each rewrite session is recorded with metrics (LCS, n-gram, consecutive matches)
+2. User provides feedback (vocabulary, structure, terminology, overall scores)
+3. System learns from feedback and updates strategies
+4. Next rewrite applies learned suggestions
 
-```
-## 改写完成！请提供反馈
+### Feedback Dimensions
 
-### 改写质量评分 (1-5分)
-- 词汇替换质量: ___/5
-- 句子结构调整: ___/5
-- 专业术语保留: ___/5
-- 整体满意度: ___/5
+- **Vocabulary score** (1-5): Quality of word replacements
+- **Structure score** (1-5): Sentence restructuring quality
+- **Terminology score** (1-5): Professional term preservation
+- **Overall score** (1-5): General satisfaction
 
-### 具体反馈
-1. 哪些改写你最满意？
-2. 哪些改写需要改进？
-3. 有没有遗漏的专业术语？
-4. 其他建议：
+### What Gets Learned
 
-### 是否保存此反馈？
-- 是，保存到学习库
-- 否，不保存
+- `preferred_vocabulary`: Word replacement pairs that received high scores
+- `effective_techniques`: Rewriting techniques with ≥70% success rate
+- `intensity_multiplier`: Adjustment factor based on feedback trends
+- `new_terms_to_preserve`: Domain terms reported by users
+- `domain_patterns`: Common issues per academic domain
+
+### Usage
+
+```bash
+# 获取建议（改写前）
+$PY scripts/rewrite_with_feedback.py suggest [domain] [intensity]
+
+# 分析改写结果（改写后）
+$PY scripts/rewrite_with_feedback.py analyze <original_file> <rewritten_file> [domain] [intensity]
+
+# 提交反馈
+$PY scripts/rewrite_with_feedback.py feedback <session_id> <vocab> <structure> <terminology> <overall>
+
+# 查看策略报告
+$PY scripts/rewrite_with_feedback.py report
 ```
 
 ### Feedback Storage
 
-Feedback is saved to:
 ```
-E:\WorkSpace\Claude Code\.claude\skills\paper-rewriter\feedback\
-├── sessions/
-│   ├── 2026-06-20-001.json
-│   ├── 2026-06-20-002.json
-│   └── ...
-├── summaries/
-│   ├── 2026-06-summary.json
-│   └── ...
+feedback/
+├── sessions/              # 改写会话记录（每个会话一个 JSON 文件）
+│   └── 2026-06-20-<id>.json
 └── learning/
-    ├── vocabulary_updates.json
-    ├── technique_updates.json
-    └── ...
-```
-
-### Learning Analysis
-
-The skill automatically loads learned strategies when rewriting. Feedback data is stored in `feedback/learning/strategies.json`.
-
-### Output
-
-```
-## 反馈分析报告
-
-### 摘要
-- 总会话数: 150
-- 平均满意度: 4.2/5
-- 最佳领域: 生态安全格局 (4.5/5)
-- 最需改进领域: SHAP分析 (3.8/5)
-
-### 常见问题
-1. 25% 用户反馈"部分句子改写后不够自然"
-2. 15% 用户反馈"希望提供更多改写选项"
-3. 10% 用户反馈"某些专业术语未被识别"
-
-### 改进建议
-1. 优化句子结构调整算法，提高自然度
-2. 为每个句子提供 3-5 个改写选项
-3. 扩充专业术语库，添加更多领域词汇
+    └── strategies.json    # 学习到的策略（自动更新）
 ```
 
 ---
@@ -300,57 +198,17 @@ The skill automatically loads learned strategies when rewriting. Feedback data i
 
 Process multiple paragraphs or complete sections.
 
-### Usage
+### Workflow
 
-When rewriting multiple paragraphs:
+1. **Extract text** from document: `$PY scripts/document_parser.py <file> [section]`
+2. **Get suggestions** for the domain: `$PY scripts/rewrite_with_feedback.py suggest <domain>`
+3. **Rewrite each paragraph** applying suggestions
+4. **Analyze each rewrite**: `$PY scripts/rewrite_with_feedback.py analyze ...`
+5. **Collect feedback** after reviewing results
 
-1. **Analyze the Complete Text**
-   - Identify all paragraphs that need rewriting
-   - Note which paragraphs have high similarity
-   - Plan the rewriting strategy
+### Tips
 
-2. **Process Paragraphs Sequentially**
-   - Rewrite each paragraph using the core process
-   - Maintain consistency across paragraphs
-   - Keep track of terminology used
-
-3. **Verify Cross-Paragraph Consistency**
-   - Check that the same concept uses the same term throughout
-   - Verify transitions are smooth
-   - Ensure logical flow is maintained
-
-4. **Generate Summary Report**
-   - List all changes made
-   - Note which paragraphs were heavily/lightly modified
-   - Highlight any areas that need manual review
-
-### Example
-
-```
-## Batch Processing Report
-
-### Summary
-- Total paragraphs: 10
-- Rewritten: 8
-- Skipped: 2 (citations only)
-
-### Paragraph Details
-
-1. ✅ Paragraph 1 (Heavy intensity)
-   - Similarity: 45% → 12%
-   - Changes: Complete restructuring
-
-2. ✅ Paragraph 2 (Medium intensity)
-   - Similarity: 35% → 8%
-   - Changes: Vocabulary + structure
-
-3. ⏭️ Paragraph 3 (Skipped)
-   - Reason: Citation only, no changes needed
-
-...
-
-### Overall Results
-- Average similarity reduction: 28%
-- Total words changed: 150
-- Estimated time: 5 minutes
-```
+- Process sections (Abstract, Introduction, Methods, etc.) separately
+- Maintain terminology consistency across paragraphs
+- Use the same intensity level within a section
+- Review the similarity report before moving to the next section

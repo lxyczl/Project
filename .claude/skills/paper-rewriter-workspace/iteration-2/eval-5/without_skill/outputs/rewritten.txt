@@ -1,1 +1,0 @@
-We utilized ResNet-50 for training the model on ImageNet dataset. The CNN got 95% accuracy. We employed Adam optimizer with learning rate 0.001. The LSTM had 128 hidden units.

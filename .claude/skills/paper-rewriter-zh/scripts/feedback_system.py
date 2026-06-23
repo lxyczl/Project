@@ -114,14 +114,17 @@ def classify_failure(metrics: dict, verdict: str) -> str:
 class FeedbackSystem:
     """反馈学习系统"""
 
-    def __init__(self, skill_dir: Path = None):
-        if skill_dir is None:
-            skill_dir = Path(__file__).parent.parent
+    def __init__(self, data_dir: Path = None):
+        if data_dir is None:
+            data_dir = Path(__file__).parent.parent / "feedback"
 
-        self.skill_dir = skill_dir
-        self.feedback_dir = skill_dir / "feedback"
-        self.sessions_dir = self.feedback_dir / "sessions"
-        self.learning_dir = self.feedback_dir / "learning"
+        # 兼容：如果传入的是 skill_dir（包含 feedback/ 子目录），自动定位
+        if (data_dir / "feedback").is_dir() and not (data_dir / "sessions").is_dir():
+            data_dir = data_dir / "feedback"
+
+        self.data_dir = data_dir
+        self.sessions_dir = data_dir / "sessions"
+        self.learning_dir = data_dir / "learning"
         self.strategies_file = self.learning_dir / "strategies.json"
 
         self.sessions_dir.mkdir(parents=True, exist_ok=True)

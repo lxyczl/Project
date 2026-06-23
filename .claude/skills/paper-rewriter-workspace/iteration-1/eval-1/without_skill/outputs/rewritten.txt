@@ -1,1 +1,0 @@
-The findings indicate that the proposed method outperforms current approaches. It obtains better accuracy on the benchmark dataset, and the improvement is considerable.

@@ -1,0 +1,30 @@
+{
+  "session_id": "2026-06-23-9fcfdef3",
+  "timestamp": "2026-06-23T18:08:42.493663",
+  "domain": "计算机",
+  "intensity": "中度",
+  "section_type": "unknown",
+  "original_text": "本研究采用深度学习方法对图像进行分类处理，实验结果表明该方法具有较高的准确率。",
+  "rewritten_text": "本探究运用深度学习技术对图片开展分类操作，实验数据显示此方法拥有较好的精度。",
+  "changes_made": [],
+  "scores": null,
+  "feedback": null,
+  "metrics": {
+    "unigram_overlap": 0.524,
+    "bigram_overlap": 0.095,
+    "trigram_overlap": 0.0,
+    "max_consecutive": 5,
+    "vocabulary_diversity": 1.0,
+    "original_char_count": 37,
+    "rewritten_char_count": 36,
+    "token_mode": "word",
+    "content_word_overlap": 0.474
+  },
+  "auto_evaluation": {
+    "verdict": "excellent",
+    "score": 81,
+    "is_success": true,
+    "reason": "连续5字匹配，三元组0.0%，改写效果优秀"
+  },
+  "auto_learned": true
+}

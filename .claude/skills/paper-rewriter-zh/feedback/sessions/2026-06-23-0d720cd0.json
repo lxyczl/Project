@@ -1,0 +1,30 @@
+{
+  "session_id": "2026-06-23-0d720cd0",
+  "timestamp": "2026-06-23T18:08:42.496079",
+  "domain": "通用",
+  "intensity": "中度",
+  "section_type": "unknown",
+  "original_text": "测试文本",
+  "rewritten_text": "测试文本",
+  "changes_made": [],
+  "scores": null,
+  "feedback": null,
+  "metrics": {
+    "unigram_overlap": 1.0,
+    "bigram_overlap": 1.0,
+    "trigram_overlap": 1.0,
+    "max_consecutive": 4,
+    "vocabulary_diversity": 1.0,
+    "original_char_count": 4,
+    "rewritten_char_count": 4,
+    "token_mode": "char",
+    "content_word_overlap": 1.0
+  },
+  "auto_evaluation": {
+    "verdict": "warning",
+    "score": 35,
+    "is_success": false,
+    "reason": "连续4字匹配（阈值10），三元组100.0%（阈值20%）"
+  },
+  "auto_learned": true
+}

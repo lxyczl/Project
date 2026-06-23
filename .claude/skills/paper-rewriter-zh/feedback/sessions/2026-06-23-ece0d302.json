@@ -1,0 +1,30 @@
+{
+  "session_id": "2026-06-23-ece0d302",
+  "timestamp": "2026-06-23T18:08:42.502229",
+  "domain": "通用",
+  "intensity": "中度",
+  "section_type": "unknown",
+  "original_text": "这是一段超过十三个字的测试文本用于检测连续匹配的情况",
+  "rewritten_text": "这是一段超过十三个字的测试文本用于检测连续匹配的情况",
+  "changes_made": [],
+  "scores": null,
+  "feedback": null,
+  "metrics": {
+    "unigram_overlap": 1.0,
+    "bigram_overlap": 1.0,
+    "trigram_overlap": 1.0,
+    "max_consecutive": 26,
+    "vocabulary_diversity": 0.929,
+    "original_char_count": 26,
+    "rewritten_char_count": 26,
+    "token_mode": "word",
+    "content_word_overlap": 1.0
+  },
+  "auto_evaluation": {
+    "verdict": "fail",
+    "score": 0,
+    "is_success": false,
+    "reason": "连续26字匹配，超过知网13字阈值"
+  },
+  "auto_learned": true
+}

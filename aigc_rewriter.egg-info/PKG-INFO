@@ -1,8 +1,0 @@
-Metadata-Version: 2.4
-Name: aigc-rewriter
-Version: 0.1.0
-Summary: 中文论文降 AIGC 率分析引擎
-Requires-Python: >=3.10
-Requires-Dist: jieba>=0.42.1
-Provides-Extra: dev
-Requires-Dist: pytest>=7.0; extra == "dev"

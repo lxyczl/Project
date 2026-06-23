@@ -1,0 +1,164 @@
+{
+  "vocabulary_preferences": {},
+  "technique_effectiveness": {
+    "句式重组": {
+      "success": 0,
+      "total": 0
+    },
+    "主被动转换": {
+      "success": 0,
+      "total": 0
+    },
+    "拆分长句": {
+      "success": 0,
+      "total": 0
+    },
+    "合并短句": {
+      "success": 0,
+      "total": 0
+    },
+    "引用位置移动": {
+      "success": 0,
+      "total": 0
+    },
+    "同义词替换": {
+      "success": 0,
+      "total": 0
+    },
+    "增加修饰语": {
+      "success": 0,
+      "total": 0
+    },
+    "删除冗余": {
+      "success": 0,
+      "total": 0
+    },
+    "调整语序": {
+      "success": 0,
+      "total": 0
+    },
+    "添加过渡词": {
+      "success": 0,
+      "total": 0
+    },
+    "具体化": {
+      "success": 0,
+      "total": 0
+    },
+    "抽象化": {
+      "success": 0,
+      "total": 0
+    },
+    "因果倒置": {
+      "success": 0,
+      "total": 0
+    },
+    "条件重组": {
+      "success": 0,
+      "total": 0
+    },
+    "否定反转": {
+      "success": 0,
+      "total": 0
+    },
+    "四字词语重组": {
+      "success": 0,
+      "total": 0
+    },
+    "文言成分替换": {
+      "success": 0,
+      "total": 0
+    },
+    "句末语气词调整": {
+      "success": 0,
+      "total": 0
+    },
+    "把字句/被字句转换": {
+      "success": 0,
+      "total": 0
+    },
+    "话题-评论结构重组": {
+      "success": 0,
+      "total": 0
+    },
+    "量词替换": {
+      "success": 0,
+      "total": 0
+    },
+    "并列结构重组": {
+      "success": 0,
+      "total": 0
+    },
+    "否定表达重组": {
+      "success": 0,
+      "total": 0
+    },
+    "数量表达重组": {
+      "success": 0,
+      "total": 0
+    },
+    "时间表达重组": {
+      "success": 0,
+      "total": 0
+    }
+  },
+  "domain_patterns": {
+    "计算机": {
+      "avg_score": 4.05,
+      "session_count": 1,
+      "common_issues": [],
+      "auto_success_count": 1,
+      "auto_fail_count": 0
+    },
+    "通用": {
+      "avg_score": 1.9333333333333333,
+      "session_count": 3,
+      "common_issues": [
+        "连续4字匹配（阈值10），三元组100.0%（阈值20%）",
+        "连续26字匹配，超过知网13字阈值"
+      ],
+      "auto_success_count": 1,
+      "auto_fail_count": 2
+    }
+  },
+  "intensity_adjustments": {
+    "轻度": {
+      "multiplier": 1.0,
+      "consecutive_failures": 0,
+      "consecutive_successes": 0
+    },
+    "中度": {
+      "multiplier": 1.07,
+      "consecutive_failures": 0,
+      "consecutive_successes": 1
+    },
+    "重度": {
+      "multiplier": 1.0,
+      "consecutive_failures": 0,
+      "consecutive_successes": 0
+    }
+  },
+  "technique_combinations": {},
+  "problem_patterns": [
+    {
+      "issue": "连续4字匹配（阈值10），三元组100.0%（阈值20%）",
+      "failure_type": "trigram_risk",
+      "domain": "通用",
+      "intensity": "中度",
+      "max_consecutive": 4,
+      "trigram_overlap": 1.0,
+      "timestamp": "2026-06-23T18:09:34.912997"
+    },
+    {
+      "issue": "连续26字匹配，超过知网13字阈值",
+      "failure_type": "consecutive_too_long",
+      "domain": "通用",
+      "intensity": "中度",
+      "max_consecutive": 26,
+      "trigram_overlap": 1.0,
+      "timestamp": "2026-06-23T18:09:34.917799"
+    }
+  ],
+  "new_terms": [],
+  "last_updated": "2026-06-23T18:09:34.920858"
+}

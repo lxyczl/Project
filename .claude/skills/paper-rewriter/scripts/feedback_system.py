@@ -179,14 +179,15 @@ class FeedbackSystem:
 
     def _calculate_metrics(self, original: str, rewritten: str) -> dict:
         """计算改写质量指标（复用 similarity_calculator）"""
-        from similarity_calculator import tokenize, lcs_ratio, vocabulary_overlap
-        tok_orig = tokenize(original)
-        tok_rew = tokenize(rewritten)
+        from similarity_calculator import calculate_similarity
+        result = calculate_similarity(original, rewritten)
         return {
-            "lcs_ratio": round(lcs_ratio(tok_orig, tok_rew), 3),
-            "vocabulary_overlap": round(vocabulary_overlap(tok_orig, tok_rew), 3),
-            "original_word_count": len(tok_orig),
-            "rewritten_word_count": len(tok_rew),
+            "lcs_ratio": round(result.get("lcs_ratio", 0), 3),
+            "vocabulary_overlap": round(result.get("vocabulary_overlap", 0), 3),
+            "max_consecutive": result.get("max_consecutive", 0),
+            "trigram_precision": round(result.get("trigram_precision", 0), 3),
+            "original_word_count": result.get("original_word_count", 0),
+            "rewritten_word_count": result.get("rewritten_word_count", 0),
         }
 
     def collect_feedback(
@@ -333,7 +334,10 @@ class FeedbackSystem:
             verdict = eval_result["verdict"]
             is_success = eval_result["is_success"]
 
-        if not is_success:
+        # 同时考虑用户主观评分：低分反馈视为失败
+        user_wants_more = avg_score < 3
+
+        if not is_success or user_wants_more:
             count = adjustment["consecutive_failures"]
             step = min(0.10, 0.05 + count * 0.01)
             adjustment["multiplier"] = min(1.5, adjustment["multiplier"] + step)
