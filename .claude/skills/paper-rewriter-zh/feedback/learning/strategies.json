@@ -1,0 +1,190 @@
+{
+  "vocabulary_preferences": {},
+  "technique_effectiveness": {
+    "句式重组": {
+      "success": 0,
+      "total": 0
+    },
+    "主被动转换": {
+      "success": 0,
+      "total": 0
+    },
+    "拆分长句": {
+      "success": 0,
+      "total": 0
+    },
+    "合并短句": {
+      "success": 0,
+      "total": 0
+    },
+    "引用位置移动": {
+      "success": 0,
+      "total": 0
+    },
+    "同义词替换": {
+      "success": 0,
+      "total": 0
+    },
+    "增加修饰语": {
+      "success": 0,
+      "total": 0
+    },
+    "删除冗余": {
+      "success": 0,
+      "total": 0
+    },
+    "调整语序": {
+      "success": 0,
+      "total": 0
+    },
+    "添加过渡词": {
+      "success": 0,
+      "total": 0
+    },
+    "具体化": {
+      "success": 0,
+      "total": 0
+    },
+    "抽象化": {
+      "success": 0,
+      "total": 0
+    },
+    "因果倒置": {
+      "success": 0,
+      "total": 0
+    },
+    "条件重组": {
+      "success": 0,
+      "total": 0
+    },
+    "否定反转": {
+      "success": 0,
+      "total": 0
+    },
+    "四字词语重组": {
+      "success": 0,
+      "total": 0
+    },
+    "文言成分替换": {
+      "success": 0,
+      "total": 0
+    },
+    "句末语气词调整": {
+      "success": 0,
+      "total": 0
+    },
+    "把字句/被字句转换": {
+      "success": 0,
+      "total": 0
+    },
+    "话题-评论结构重组": {
+      "success": 0,
+      "total": 0
+    },
+    "量词替换": {
+      "success": 0,
+      "total": 0
+    },
+    "并列结构重组": {
+      "success": 0,
+      "total": 0
+    },
+    "否定表达重组": {
+      "success": 0,
+      "total": 0
+    },
+    "数量表达重组": {
+      "success": 0,
+      "total": 0
+    },
+    "时间表达重组": {
+      "success": 0,
+      "total": 0
+    }
+  },
+  "domain_patterns": {
+    "生态水文": {
+      "avg_score": 0.0,
+      "session_count": 1,
+      "common_issues": [
+        "连续14字匹配，超过知网13字阈值"
+      ],
+      "auto_success_count": 0,
+      "auto_fail_count": 1
+    },
+    "通用": {
+      "avg_score": 3.233333333333334,
+      "session_count": 3,
+      "common_issues": [
+        "连续11字匹配（阈值10），三元组8.5%（阈值20%）"
+      ],
+      "auto_success_count": 2,
+      "auto_fail_count": 1
+    },
+    "地下水脆弱性": {
+      "avg_score": 1.8,
+      "session_count": 1,
+      "common_issues": [
+        "连续12字匹配（阈值10），三元组34.9%（阈值20%）"
+      ],
+      "auto_success_count": 0,
+      "auto_fail_count": 1
+    },
+    "生态安全格局": {
+      "avg_score": 3.2,
+      "session_count": 1,
+      "common_issues": [],
+      "auto_success_count": 1,
+      "auto_fail_count": 0
+    }
+  },
+  "intensity_adjustments": {
+    "轻度": {
+      "multiplier": 0.98,
+      "consecutive_failures": 0,
+      "consecutive_successes": 1
+    },
+    "中度": {
+      "multiplier": 1.11,
+      "consecutive_failures": 2,
+      "consecutive_successes": 0
+    },
+    "重度": {
+      "multiplier": 1.05,
+      "consecutive_failures": 1,
+      "consecutive_successes": 0
+    }
+  },
+  "technique_combinations": {},
+  "problem_patterns": [
+    {
+      "issue": "连续14字匹配，超过知网13字阈值",
+      "failure_type": "consecutive_too_long",
+      "domain": "生态水文",
+      "intensity": "重度",
+      "max_consecutive": 14,
+      "trigram_overlap": 0.456,
+      "timestamp": "2026-06-23T20:16:52.147425"
+    },
+    {
+      "issue": "连续11字匹配（阈值10），三元组8.5%（阈值20%）",
+      "failure_type": "consecutive_risk",
+      "domain": "通用",
+      "intensity": "中度",
+      "max_consecutive": 11,
+      "trigram_overlap": 0.085,
+      "timestamp": "2026-06-23T20:16:52.168912"
+    },
+    {
+      "issue": "连续12字匹配（阈值10），三元组34.9%（阈值20%）",
+      "failure_type": "structure_too_similar",
+      "domain": "地下水脆弱性",
+      "intensity": "中度",
+      "max_consecutive": 12,
+      "trigram_overlap": 0.349,
+      "timestamp": "2026-06-23T20:16:52.173713"
+    }
+  ],
+  "new_terms": [],
+  "last_updated": "2026-06-23T20:16:52.189438"
+}

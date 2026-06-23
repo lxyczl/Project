@@ -62,14 +62,16 @@ AIGC-rewriter-zh/
 
 ## 快速使用
 
+支持输入格式：`.txt` / `.md` / `.docx` / `.pdf`（文字型）。输出仍为 `.txt` 或 `.md`。
+
 ### 分析模式
 
 分析原文风险，输出改写建议：
 
 ```bash
 $PY scripts/run_pipeline.py analyze --text "综上所述，本研究通过深入分析..."
-$PY scripts/run_pipeline.py analyze 文件路径
-$PY scripts/run_pipeline.py analyze 文件路径 --platform cnki --threshold 0.2
+$PY scripts/run_pipeline.py analyze 论文.docx
+$PY scripts/run_pipeline.py analyze 论文.pdf --platform cnki --threshold 0.2
 ```
 
 ### 验证模式

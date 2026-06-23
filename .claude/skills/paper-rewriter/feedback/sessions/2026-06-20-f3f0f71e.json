@@ -1,0 +1,31 @@
+{
+  "session_id": "2026-06-20-f3f0f71e",
+  "timestamp": "2026-06-20T19:54:44.977996",
+  "domain": "生态安全格局",
+  "intensity": "medium",
+  "section_type": "unknown",
+  "original_text": "The ecological source is the core habitat area. The ecological corridor connects fragmented patches.",
+  "rewritten_text": "The ecological source constitutes the fundamental habitat area. The ecological corridor facilitates connectivity between fragmented patches.",
+  "changes_made": [],
+  "scores": {
+    "vocabulary": 5,
+    "sentence_structure": 4,
+    "terminology_preservation": 5,
+    "overall_satisfaction": 4
+  },
+  "feedback": {
+    "liked": "术语保留完整",
+    "improved": "可以增加更多句式变化",
+    "missing_terms": [
+      "生态源地",
+      "生态廊道"
+    ],
+    "other_suggestions": "希望提供更多改写选项"
+  },
+  "metrics": {
+    "unigram_overlap": 0.727,
+    "max_consecutive": 5,
+    "original_word_count": 14,
+    "rewritten_word_count": 16
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "session_id": "2026-06-20-70ef4515",
+  "timestamp": "2026-06-20T19:53:08.072647",
+  "domain": "生态水文",
+  "intensity": "light",
+  "section_type": "unknown",
+  "original_text": "The model was used to calculate the water yield.",
+  "rewritten_text": "The model was employed to compute the water yield.",
+  "changes_made": [],
+  "scores": null,
+  "feedback": null,
+  "metrics": {
+    "unigram_overlap": 0.75,
+    "max_consecutive": 3,
+    "original_word_count": 9,
+    "rewritten_word_count": 9
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "session_id": "2026-06-23-faa29d4d",
+  "timestamp": "2026-06-23T18:40:28.245709",
+  "domain": "general",
+  "intensity": "medium",
+  "section_type": "unknown",
+  "original_text": "The method is effective for this problem.\n",
+  "rewritten_text": "The approach works well for this issue.\n",
+  "changes_made": [],
+  "scores": null,
+  "feedback": null,
+  "metrics": {
+    "lcs_ratio": 0.429,
+    "vocabulary_overlap": 0.273,
+    "original_word_count": 7,
+    "rewritten_word_count": 7
+  }
+}

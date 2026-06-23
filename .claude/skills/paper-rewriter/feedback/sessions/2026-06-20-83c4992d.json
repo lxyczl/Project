@@ -1,0 +1,50 @@
+{
+  "session_id": "2026-06-20-83c4992d",
+  "timestamp": "2026-06-20T19:54:10.232850",
+  "domain": "生态安全格局",
+  "intensity": "medium",
+  "section_type": "introduction",
+  "original_text": "Driven by the accelerating dual forces of urban expansion and industrial growth, anthropogenic pressures upon natural ecosystems have progressively escalated, while the excessive appropriation of land resources has precipitated a sustained contraction of ecological space, rendering the structural tensions among ecological, productive, and residential land uses increasingly pronounced[1]. Such a situation is especially pronounced in the Yinshanbeilu region, whose ecological environment is inherently fragile. The region has seen its ecological resilience and growth prospects decline markedly. Urban boundaries have kept pushing outward while resource extraction has intensified. These two trends, acting in concert, have degraded vast stretches of grassland, turned arable land into desert, and polluted underground water sources.[2]. Constructing ecological security patterns has emerged as an essential strategy for safeguarding ecosystem stability and securing regional ecological security. Furthermore, it acts as a crucial mechanism for aligning economic advancement with ecological protection, ultimately facilitating the realization of ecological civilization.[3].",
+  "rewritten_text": "Propelled by the concurrent intensification of urban expansion and industrial development, anthropogenic impacts on natural ecosystems have steadily increased, while the overexploitation of land resources has caused a persistent reduction in ecological space, making the structural conflicts among ecological, productive, and residential land uses more evident[1]. This condition is particularly acute in the Yinshanbeilu region, where the ecological environment exhibits inherent fragility. The area has experienced significant declines in ecological resilience and development potential. Urban perimeters have continuously expanded while resource extraction has escalated. These dual pressures have simultaneously degraded extensive grassland areas, converted agricultural land to desert, and contaminated groundwater resources.[2]. Developing ecological security patterns has become a vital approach for protecting ecosystem stability and ensuring regional ecological security. Moreover, it serves as a critical mechanism for coordinating economic development with environmental protection, ultimately promoting the achievement of ecological civilization.[3].",
+  "changes_made": [
+    {
+      "type": "voice_conversion",
+      "original": "Driven by",
+      "rewritten": "Propelled by",
+      "position": "sentence 1"
+    },
+    {
+      "type": "synonym_replacement",
+      "original": "accelerating dual forces",
+      "rewritten": "concurrent intensification",
+      "position": "sentence 1"
+    },
+    {
+      "type": "synonym_replacement",
+      "original": "progressively escalated",
+      "rewritten": "steadily increased",
+      "position": "sentence 1"
+    }
+  ],
+  "scores": {
+    "vocabulary": 5,
+    "sentence_structure": 4,
+    "terminology_preservation": 5,
+    "overall_satisfaction": 4
+  },
+  "feedback": {
+    "liked": "专业术语保留得很好，句子结构变化自然",
+    "improved": "部分词汇替换可以更丰富",
+    "missing_terms": [
+      "生态韧性",
+      "生态空间"
+    ],
+    "other_suggestions": "希望提供更多同义词选择"
+  },
+  "metrics": {
+    "unigram_overlap": 0.473,
+    "max_consecutive": 3,
+    "original_word_count": 149,
+    "rewritten_word_count": 141
+  }
+}

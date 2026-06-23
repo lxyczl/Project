@@ -1,0 +1,72 @@
+{
+  "evals": [
+    {
+      "id": "eval_001",
+      "name": "AI套话密集检测",
+      "description": "文本包含大量AI套话，应被检测为高风险",
+      "original": "综上所述，本研究通过深入分析，发现了一系列重要问题。这些问题的产生，导致了相关领域的发展受到了严重的阻碍。因此，我们需要采取有效措施来解决这些问题。值得注意的是，该方法在实际应用中取得了显著成效。",
+      "expected": {
+        "risk_min": 0.2,
+        "cliche_detected": true,
+        "connector_overuse": false
+      }
+    },
+    {
+      "id": "eval_002",
+      "name": "连接词过密检测",
+      "description": "文本连接词密度过高，应被标记",
+      "original": "首先，我们需要分析数据。其次，我们需要建立模型。然后，我们需要验证结果。此外，我们还需要考虑误差。同时，我们也要关注效率。最后，我们得出结论。",
+      "expected": {
+        "risk_min": 0.2,
+        "connector_overuse": true
+      }
+    },
+    {
+      "id": "eval_003",
+      "name": "句长过于均匀检测",
+      "description": "句子长度过于均匀，应被标记为低爆发度",
+      "original": "本研究采用深度学习方法进行图像分类。该方法基于卷积神经网络提取图像特征。实验结果表明该方法具有较高准确率。我们对比了多种模型的性能表现。",
+      "expected": {
+        "risk_min": 0.1,
+        "uniform_sentence": true
+      }
+    },
+    {
+      "id": "eval_004",
+      "name": "正常学术文本（低风险）",
+      "description": "正常的学术文本，风险应较低",
+      "original": "地下水位下降是导致植被退化的主要原因。张三等(2020)在华北平原的研究中发现，地下水埋深超过8m时，植被覆盖度显著下降。这一结论与李四(2019)在西北干旱区的观测结果一致——当地下水位低于6m时，浅根系植物开始出现水分胁迫症状。",
+      "expected": {
+        "risk_max": 0.4,
+        "cliche_detected": false
+      }
+    },
+    {
+      "id": "eval_005",
+      "name": "专业术语保护验证",
+      "description": "包含专业术语的文本，改写时必须保留术语",
+      "original": "本研究采用DRASTIC模型对地下水脆弱性进行评价。地下水埋深、含水层介质、包气带介质等参数是影响地下水脆弱性的重要因素。通过GIS技术对各参数进行空间分析，得到地下水脆弱性分布图。",
+      "expected": {
+        "preserve_terms": ["DRASTIC", "GIS", "地下水脆弱性"]
+      }
+    },
+    {
+      "id": "eval_006",
+      "name": "混合问题检测",
+      "description": "同时存在多种AI特征的文本",
+      "original": "综上所述，随着深度学习技术的快速发展，越来越多的研究表明，卷积神经网络在图像分类领域具有重要意义。大量研究表明，ResNet在特征提取方面发挥了重要作用。在此基础上，本研究对多种模型进行了对比分析，结果表明该方法具有较高的准确率。",
+      "expected": {
+        "risk_min": 0.2,
+        "cliche_detected": true,
+        "issue_count_min": 2
+      }
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "created": "2026-06-23",
+    "description": "AIGC-rewriter-zh 评估基准",
+    "total_cases": 6,
+    "focus": "AIGC 风险检测与改写质量"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "session_id": "2026-06-20-ec6f92b5",
+  "timestamp": "2026-06-20T20:00:33.272145",
+  "domain": "生态安全格局",
+  "intensity": "heavy",
+  "section_type": "abstract",
+  "original_text": "Rapid urbanization and intensive resource extraction have increasingly degraded ecosystems worldwide, particularly in arid and semi-arid zones. Although the construction of ecological security patterns (ESPs) has gained broad recognition as a viable approach to sustaining ecosystem stability. Nevertheless, prevailing methodologies concentrate chiefly on surface level conditions and tend to overlook the subsurface system, that is, groundwater, which constitutes a critical limiting factor within d",
+  "rewritten_text": "Rapid urbanization and intensive resource extraction have progressively deteriorated global ecosystems, especially within arid and semi-arid regions. While ecological security pattern (ESP) construction has emerged as a widely accepted strategy for maintaining ecosystem equilibrium, current methodologies predominantly address surface-level conditions and systematically neglect subsurface systems—specifically groundwater—which represents a critical constraining factor in dryland environments. Consequently, traditional ESPs frequently inadequately incorporate subsurface ecological dynamics, limiting their effectiveness for practical conservation planning.",
+  "changes_made": [],
+  "scores": {
+    "vocabulary": 5,
+    "sentence_structure": 4,
+    "terminology_preservation": 5,
+    "overall_satisfaction": 4
+  },
+  "feedback": {
+    "liked": "专业术语保留得很好",
+    "improved": "部分句子改写后不够自然",
+    "missing_terms": [
+      "生态安全格局",
+      "地下水脆弱性"
+    ],
+    "other_suggestions": "希望提供更多改写选项"
+  },
+  "metrics": {
+    "unigram_overlap": 0.508,
+    "max_consecutive": 7,
+    "original_word_count": 65,
+    "rewritten_word_count": 74
+  }
+}
