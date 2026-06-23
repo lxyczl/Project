@@ -1,0 +1,85 @@
+{
+  "vocabulary_preferences": {},
+  "technique_effectiveness": {
+    "connector_replace": {
+      "success": 0,
+      "total": 0
+    },
+    "sentence_restructure": {
+      "success": 0,
+      "total": 0
+    },
+    "cliche_replace": {
+      "success": 0,
+      "total": 0
+    },
+    "passive_to_active": {
+      "success": 0,
+      "total": 0
+    },
+    "personal_voice_add": {
+      "success": 0,
+      "total": 0
+    },
+    "paragraph_reorganize": {
+      "success": 0,
+      "total": 0
+    }
+  },
+  "section_patterns": {
+    "body": {
+      "avg_reduction": 0.044,
+      "session_count": 6,
+      "common_issues": [],
+      "effective_techniques": {}
+    }
+  },
+  "intensity_adjustments": {
+    "light": {
+      "multiplier": 1.0,
+      "consecutive_failures": 0,
+      "consecutive_successes": 0
+    },
+    "medium": {
+      "multiplier": 1.1500000000000001,
+      "consecutive_failures": 1,
+      "consecutive_successes": 0
+    },
+    "heavy": {
+      "multiplier": 1.0,
+      "consecutive_failures": 0,
+      "consecutive_successes": 0
+    }
+  },
+  "technique_combinations": {},
+  "problem_patterns": [
+    {
+      "section": "body",
+      "risk_before": 0.05,
+      "risk_after": 0.05,
+      "failure_type": "risk_increased",
+      "techniques": [],
+      "timestamp": "2026-06-23T22:40:46.130379"
+    },
+    {
+      "section": "body",
+      "risk_before": 0.05,
+      "risk_after": 0.05,
+      "failure_type": "risk_increased",
+      "techniques": [],
+      "timestamp": "2026-06-23T22:40:56.074821"
+    },
+    {
+      "section": "body",
+      "risk_before": 0.05,
+      "risk_after": 0.05,
+      "failure_type": "risk_increased",
+      "techniques": [],
+      "timestamp": "2026-06-23T22:42:27.035567"
+    }
+  ],
+  "session_count": 6,
+  "total_paragraphs_rewritten": 6,
+  "total_risk_reduction": 0.264,
+  "last_updated": "2026-06-23T22:42:27.035890"
+}

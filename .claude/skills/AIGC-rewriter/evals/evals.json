@@ -1,0 +1,53 @@
+[
+  {
+    "id": "eval_001",
+    "description": "AI cliche dense text",
+    "input": "In recent years, it is worth noting that deep learning has gained significant attention. Furthermore, this technology plays a crucial role in various domains. Moreover, it has been shown to shed light on previously unsolved problems. Additionally, a growing body of evidence suggests that it paves the way for future innovations.",
+    "assertions": {
+      "risk_min": 0.2,
+      "cliche_detected": true
+    }
+  },
+  {
+    "id": "eval_002",
+    "description": "Connector overuse text",
+    "input": "The model was trained on a large dataset. However, the results were not satisfactory. Therefore, we modified the architecture. Furthermore, we added more layers. Moreover, we adjusted the learning rate. Additionally, we used data augmentation. Consequently, the performance improved significantly. Nevertheless, further optimization is needed.",
+    "assertions": {
+      "connector_overuse": true
+    }
+  },
+  {
+    "id": "eval_003",
+    "description": "Uniform sentence length text",
+    "input": "The model was trained on the dataset. The results showed good performance. The accuracy was above ninety percent. The loss function converged well. The training took several hours. The hyperparameters were optimized. The model was tested on new data. The generalization was satisfactory.",
+    "assertions": {
+      "uniform_sentence": true
+    }
+  },
+  {
+    "id": "eval_004",
+    "description": "Normal academic text with citations",
+    "input": "We evaluated the proposed method on three benchmark datasets (ImageNet, CIFAR-10, and COCO). As shown in Table 1, our approach achieves 94.5% accuracy on CIFAR-10, which is comparable to state-of-the-art methods [1, 2]. The experimental setup follows the protocol described in [3].",
+    "assertions": {
+      "risk_max": 0.4,
+      "cliche_detected": false
+    }
+  },
+  {
+    "id": "eval_005",
+    "description": "Protected term preservation",
+    "input": "We propose a novel deep learning architecture based on the Transformer model. The attention mechanism enables the model to capture long-range dependencies. We use backpropagation with gradient descent to optimize the loss function. The hyperparameter tuning was performed using grid search.",
+    "assertions": {
+      "preserve_terms": ["deep learning", "Transformer", "attention mechanism", "backpropagation", "gradient descent", "loss function", "hyperparameter"]
+    }
+  },
+  {
+    "id": "eval_006",
+    "description": "Mixed issues text",
+    "input": "In recent years, it is worth noting that this approach has gained significant attention. However, there are several challenges. Furthermore, the results indicate that the method plays a crucial role. Moreover, it has been shown to shed light on underlying mechanisms. Additionally, the model achieves state-of-the-art performance.",
+    "assertions": {
+      "cliche_detected": true,
+      "issue_count_min": 2
+    }
+  }
+]

@@ -1,0 +1,750 @@
+{
+  "patterns": [
+    {
+      "id": "cliche_001",
+      "type": "cliche",
+      "match": "in recent years",
+      "replacements": ["recently", "lately", "of late"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI cliche: temporal opener"
+    },
+    {
+      "id": "cliche_002",
+      "type": "cliche",
+      "match": "it is worth noting that",
+      "replacements": ["notably", "importantly", "worth mentioning"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.8},
+      "description": "AI cliche: filler phrase"
+    },
+    {
+      "id": "cliche_003",
+      "type": "cliche",
+      "match": "plays a crucial role",
+      "replacements": ["is essential", "is vital", "is fundamental"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI cliche: importance claim"
+    },
+    {
+      "id": "cliche_004",
+      "type": "cliche",
+      "match": "has gained significant attention",
+      "replacements": ["has attracted interest", "has been widely studied", "has drawn research focus"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI cliche: popularity claim"
+    },
+    {
+      "id": "cliche_005",
+      "type": "cliche",
+      "match": "shed light on",
+      "replacements": ["reveal", "illuminate", "clarify", "explain"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.7},
+      "description": "AI cliche: discovery claim"
+    },
+    {
+      "id": "cliche_006",
+      "type": "cliche",
+      "match": "pave the way for",
+      "replacements": ["enable", "facilitate", "open doors to"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.7},
+      "description": "AI cliche: future claim"
+    },
+    {
+      "id": "cliche_007",
+      "type": "cliche",
+      "match": "in the realm of",
+      "replacements": ["in", "within", "in the field of"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: verbose preposition"
+    },
+    {
+      "id": "cliche_008",
+      "type": "cliche",
+      "match": "a growing body of evidence",
+      "replacements": ["increasing evidence", "mounting research", "more studies"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI cliche: evidence claim"
+    },
+    {
+      "id": "cliche_009",
+      "type": "cliche",
+      "match": "plays a pivotal role",
+      "replacements": ["is central", "is key", "is critical"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI cliche: importance claim"
+    },
+    {
+      "id": "cliche_010",
+      "type": "cliche",
+      "match": "serves as a cornerstone",
+      "replacements": ["underpins", "forms the basis", "is foundational"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI cliche: foundation claim"
+    },
+    {
+      "id": "cliche_011",
+      "type": "cliche",
+      "match": "stands as a testament to",
+      "replacements": ["demonstrates", "shows", "reflects"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.7},
+      "description": "AI cliche: evidence claim"
+    },
+    {
+      "id": "cliche_012",
+      "type": "cliche",
+      "match": "underscores the importance",
+      "replacements": ["highlights", "emphasizes", "shows"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.7},
+      "description": "AI cliche: emphasis"
+    },
+    {
+      "id": "cliche_013",
+      "type": "cliche",
+      "match": "lends credence to",
+      "replacements": ["supports", "confirms", "validates"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: support claim"
+    },
+    {
+      "id": "cliche_014",
+      "type": "cliche",
+      "match": "offers a glimpse into",
+      "replacements": ["reveals", "shows", "provides insight into"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: insight claim"
+    },
+    {
+      "id": "cliche_015",
+      "type": "cliche",
+      "match": "holds promise for",
+      "replacements": ["is promising for", "could benefit", "may advance"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: future claim"
+    },
+    {
+      "id": "cliche_016",
+      "type": "cliche",
+      "match": "marks a significant milestone",
+      "replacements": ["represents progress", "is a major advance", "breaks new ground"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI cliche: achievement claim"
+    },
+    {
+      "id": "cliche_017",
+      "type": "cliche",
+      "match": "represents a paradigm shift",
+      "replacements": ["changes how we think about", "fundamentally alters", "transforms"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI cliche: revolution claim"
+    },
+    {
+      "id": "cliche_018",
+      "type": "cliche",
+      "match": "calls into question",
+      "replacements": ["challenges", "undermines", "raises doubts about"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: doubt claim"
+    },
+    {
+      "id": "cliche_019",
+      "type": "cliche",
+      "match": "fuels the debate",
+      "replacements": ["adds to the discussion", "raises questions", "continues controversy"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: debate claim"
+    },
+    {
+      "id": "cliche_020",
+      "type": "cliche",
+      "match": "lies at the heart of",
+      "replacements": ["is central to", "is fundamental to", "underlies"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: centrality claim"
+    },
+    {
+      "id": "cliche_021",
+      "type": "cliche",
+      "match": "emerges as a key factor",
+      "replacements": ["becomes important", "proves critical", "is a major factor"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: factor claim"
+    },
+    {
+      "id": "cliche_022",
+      "type": "cliche",
+      "match": "serves as a catalyst",
+      "replacements": ["drives", "spurs", "accelerates"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: catalyst claim"
+    },
+    {
+      "id": "cliche_023",
+      "type": "cliche",
+      "match": "remains a subject of contention",
+      "replacements": ["is still debated", "is controversial", "is disputed"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: controversy claim"
+    },
+    {
+      "id": "connector_001",
+      "type": "connector",
+      "match": "\\bhowever\\b",
+      "replacements": ["yet", "but", "still", "nevertheless"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: adversative"
+    },
+    {
+      "id": "connector_002",
+      "type": "connector",
+      "match": "\\btherefore\\b",
+      "replacements": ["thus", "hence", "so", "consequently"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: causal"
+    },
+    {
+      "id": "connector_003",
+      "type": "connector",
+      "match": "\\bfurthermore\\b",
+      "replacements": ["moreover", "additionally", "also", "besides"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: additive"
+    },
+    {
+      "id": "connector_004",
+      "type": "connector",
+      "match": "\\bmoreover\\b",
+      "replacements": ["furthermore", "additionally", "also", "besides"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: additive"
+    },
+    {
+      "id": "connector_005",
+      "type": "connector",
+      "match": "\\bconsequently\\b",
+      "replacements": ["therefore", "thus", "as a result", "hence"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: causal"
+    },
+    {
+      "id": "connector_006",
+      "type": "connector",
+      "match": "\\bnevertheless\\b",
+      "replacements": ["however", "yet", "still", "nonetheless"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: adversative"
+    },
+    {
+      "id": "connector_007",
+      "type": "connector",
+      "match": "\\badditionally\\b",
+      "replacements": ["also", "furthermore", "moreover", "besides"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: additive"
+    },
+    {
+      "id": "connector_008",
+      "type": "connector",
+      "match": "\\bthus\\b",
+      "replacements": ["therefore", "hence", "so", "consequently"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: causal"
+    },
+    {
+      "id": "connector_009",
+      "type": "connector",
+      "match": "\\bhence\\b",
+      "replacements": ["therefore", "thus", "so", "consequently"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: causal"
+    },
+    {
+      "id": "connector_010",
+      "type": "connector",
+      "match": "\\blikewise\\b",
+      "replacements": ["similarly", "also", "in the same way"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: comparative"
+    },
+    {
+      "id": "connector_011",
+      "type": "connector",
+      "match": "\\bmeanwhile\\b",
+      "replacements": ["at the same time", "simultaneously", "concurrently"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: temporal"
+    },
+    {
+      "id": "connector_012",
+      "type": "connector",
+      "match": "\\bsubsequently\\b",
+      "replacements": ["later", "afterward", "then", "next"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: temporal"
+    },
+    {
+      "id": "connector_013",
+      "type": "connector",
+      "match": "\\baccordingly\\b",
+      "replacements": ["therefore", "thus", "consequently"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: causal"
+    },
+    {
+      "id": "connector_014",
+      "type": "connector",
+      "match": "\\bconversely\\b",
+      "replacements": ["on the other hand", "in contrast", "by contrast"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: adversative"
+    },
+    {
+      "id": "connector_015",
+      "type": "connector",
+      "match": "\\bnotwithstanding\\b",
+      "replacements": ["despite", "in spite of", "nevertheless"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI connector: concessive"
+    },
+    {
+      "id": "formal_001",
+      "type": "formal",
+      "match": "based on the aforementioned analysis",
+      "replacements": ["from this analysis", "as shown above", "given these findings"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI formal: verbose reference"
+    },
+    {
+      "id": "formal_002",
+      "type": "formal",
+      "match": "in light of these findings",
+      "replacements": ["given these results", "based on this", "from these findings"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI formal: verbose reference"
+    },
+    {
+      "id": "formal_003",
+      "type": "formal",
+      "match": "this study posits that",
+      "replacements": ["we argue that", "this paper shows", "we suggest"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI formal: verbose claim"
+    },
+    {
+      "id": "formal_004",
+      "type": "formal",
+      "match": "it is imperative to note",
+      "replacements": ["importantly", "notably", "we note"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI formal: verbose emphasis"
+    },
+    {
+      "id": "formal_005",
+      "type": "formal",
+      "match": "the present research endeavors to",
+      "replacements": ["this study aims to", "we aim to", "this paper seeks to"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI formal: verbose aim"
+    },
+    {
+      "id": "sentence_pattern_001",
+      "type": "sentence_pattern",
+      "match": "not only .+ but also",
+      "replacements": ["both ... and", "as well as", "and"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI sentence pattern: correlative conjunction"
+    },
+    {
+      "id": "sentence_pattern_002",
+      "type": "sentence_pattern",
+      "match": "it is .+ that",
+      "replacements": ["direct statement", "active voice"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI sentence pattern: cleft sentence"
+    },
+    {
+      "id": "sentence_pattern_003",
+      "type": "sentence_pattern",
+      "match": "with the development of",
+      "replacements": ["as ... advances", "with progress in", "as ... evolves"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI sentence pattern: development claim"
+    },
+    {
+      "id": "sentence_pattern_004",
+      "type": "sentence_pattern",
+      "match": "there has been a growing interest in",
+      "replacements": ["researchers have increasingly focused on", "interest has grown in", "more work has focused on"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI sentence pattern: interest claim"
+    },
+    {
+      "id": "english_pattern_001",
+      "type": "english_pattern",
+      "match": "is widely regarded as",
+      "replacements": ["is considered", "is seen as", "is known as"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI English pattern: reputation claim"
+    },
+    {
+      "id": "english_pattern_002",
+      "type": "english_pattern",
+      "match": "has been extensively studied",
+      "replacements": ["has been well researched", "has received much attention", "has been widely investigated"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI English pattern: research claim"
+    },
+    {
+      "id": "english_pattern_003",
+      "type": "english_pattern",
+      "match": "it has been demonstrated that",
+      "replacements": ["research shows", "studies confirm", "evidence indicates"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI English pattern: demonstration claim"
+    },
+    {
+      "id": "english_pattern_004",
+      "type": "english_pattern",
+      "match": "the results indicate that",
+      "replacements": ["we found", "the data show", "our findings suggest"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI English pattern: result claim"
+    },
+    {
+      "id": "passive_001",
+      "type": "passive",
+      "match": "is considered to be",
+      "replacements": ["is", "remains", "constitutes"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI passive: hedged classification"
+    },
+    {
+      "id": "passive_002",
+      "type": "passive",
+      "match": "has been shown to",
+      "replacements": ["demonstrates", "reveals", "proves"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI passive: evidence claim"
+    },
+    {
+      "id": "passive_003",
+      "type": "passive",
+      "match": "is believed to",
+      "replacements": ["likely", "probably", "is thought to"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI passive: belief claim"
+    },
+    {
+      "id": "passive_004",
+      "type": "passive",
+      "match": "is often characterized by",
+      "replacements": ["typically features", "usually has", "commonly shows"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI passive: characterization"
+    },
+    {
+      "id": "cliche_024",
+      "type": "cliche",
+      "match": "at the forefront of",
+      "replacements": ["leading", "pioneering", "at the cutting edge of"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: position claim"
+    },
+    {
+      "id": "cliche_025",
+      "type": "cliche",
+      "match": "aforementioned",
+      "replacements": ["these", "the above", "such"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: verbose reference"
+    },
+    {
+      "id": "cliche_026",
+      "type": "cliche",
+      "match": "the aforementioned",
+      "replacements": ["these", "the above", "such"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: verbose reference"
+    },
+    {
+      "id": "cliche_027",
+      "type": "cliche",
+      "match": "it should be noted that",
+      "replacements": ["notably", "importantly", "note that"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI cliche: filler phrase"
+    },
+    {
+      "id": "cliche_028",
+      "type": "cliche",
+      "match": "it is important to note that",
+      "replacements": ["notably", "importantly", "note that"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI cliche: filler phrase"
+    },
+    {
+      "id": "cliche_029",
+      "type": "cliche",
+      "match": "in this context",
+      "replacements": ["here", "for this", "in this case"],
+      "platform_weight": {"turnitin": 0.6, "gptzero": 0.4},
+      "description": "AI cliche: vague reference"
+    },
+    {
+      "id": "cliche_030",
+      "type": "cliche",
+      "match": "in order to",
+      "replacements": ["to", "so as to"],
+      "platform_weight": {"turnitin": 0.6, "gptzero": 0.4},
+      "description": "AI cliche: verbose infinitive"
+    },
+    {
+      "id": "cliche_031",
+      "type": "cliche",
+      "match": "due to the fact that",
+      "replacements": ["because", "since", "as"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI cliche: verbose causal"
+    },
+    {
+      "id": "cliche_032",
+      "type": "cliche",
+      "match": "in the event that",
+      "replacements": ["if", "should", "when"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI cliche: verbose conditional"
+    },
+    {
+      "id": "cliche_033",
+      "type": "cliche",
+      "match": "a significant number of",
+      "replacements": ["many", "numerous", "several"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI cliche: verbose quantifier"
+    },
+    {
+      "id": "cliche_034",
+      "type": "cliche",
+      "match": "the vast majority of",
+      "replacements": ["most", "nearly all", "almost all"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI cliche: verbose quantifier"
+    },
+    {
+      "id": "cliche_035",
+      "type": "cliche",
+      "match": "on a regular basis",
+      "replacements": ["regularly", "routinely", "often"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: verbose adverb"
+    },
+    {
+      "id": "cliche_036",
+      "type": "cliche",
+      "match": "in a timely manner",
+      "replacements": ["quickly", "promptly", "soon"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: verbose adverb"
+    },
+    {
+      "id": "cliche_037",
+      "type": "cliche",
+      "match": "for the purpose of",
+      "replacements": ["to", "for"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: verbose preposition"
+    },
+    {
+      "id": "cliche_038",
+      "type": "cliche",
+      "match": "in the process of",
+      "replacements": ["while", "during", "as"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI cliche: verbose temporal"
+    },
+    {
+      "id": "cliche_039",
+      "type": "cliche",
+      "match": "has a profound impact on",
+      "replacements": ["greatly affects", "significantly influences", "strongly shapes"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI cliche: impact claim"
+    },
+    {
+      "id": "cliche_040",
+      "type": "cliche",
+      "match": "the primary objective of this study",
+      "replacements": ["this study aims to", "we aim to", "our goal is to"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI cliche: verbose aim"
+    },
+    {
+      "id": "formal_006",
+      "type": "formal",
+      "match": "it is evident that",
+      "replacements": ["clearly", "evidently", "obviously"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI formal: verbose emphasis"
+    },
+    {
+      "id": "formal_007",
+      "type": "formal",
+      "match": "it is well established that",
+      "replacements": ["research shows", "it is known that", "we know that"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI formal: authority claim"
+    },
+    {
+      "id": "formal_008",
+      "type": "formal",
+      "match": "the results of this study",
+      "replacements": ["our results", "these findings", "the data"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI formal: verbose reference"
+    },
+    {
+      "id": "formal_009",
+      "type": "formal",
+      "match": "in accordance with",
+      "replacements": ["following", "consistent with", "as per"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI formal: verbose compliance"
+    },
+    {
+      "id": "formal_010",
+      "type": "formal",
+      "match": "subsequent to",
+      "replacements": ["after", "following"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI formal: verbose temporal"
+    },
+    {
+      "id": "formal_011",
+      "type": "formal",
+      "match": "prior to",
+      "replacements": ["before", "ahead of"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI formal: verbose temporal"
+    },
+    {
+      "id": "formal_012",
+      "type": "formal",
+      "match": "in conjunction with",
+      "replacements": ["with", "alongside", "together with"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI formal: verbose conjunction"
+    },
+    {
+      "id": "formal_013",
+      "type": "formal",
+      "match": "with respect to",
+      "replacements": ["regarding", "concerning", "about"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI formal: verbose reference"
+    },
+    {
+      "id": "formal_014",
+      "type": "formal",
+      "match": "in terms of",
+      "replacements": ["for", "regarding", "when it comes to"],
+      "platform_weight": {"turnitin": 0.6, "gptzero": 0.4},
+      "description": "AI formal: verbose reference"
+    },
+    {
+      "id": "formal_015",
+      "type": "formal",
+      "match": "it should be emphasized that",
+      "replacements": ["importantly", "notably", "crucially"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI formal: verbose emphasis"
+    },
+    {
+      "id": "sentence_pattern_005",
+      "type": "sentence_pattern",
+      "match": "there is no denying that",
+      "replacements": ["clearly", "undeniably", "it is clear that"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI sentence pattern: emphatic claim"
+    },
+    {
+      "id": "sentence_pattern_006",
+      "type": "sentence_pattern",
+      "match": "it goes without saying that",
+      "replacements": ["clearly", "obviously", "naturally"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI sentence pattern: emphatic claim"
+    },
+    {
+      "id": "sentence_pattern_007",
+      "type": "sentence_pattern",
+      "match": "from a .+ perspective",
+      "replacements": ["for", "to", "in"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI sentence pattern: verbose viewpoint"
+    },
+    {
+      "id": "sentence_pattern_008",
+      "type": "sentence_pattern",
+      "match": "as a matter of fact",
+      "replacements": ["in fact", "actually", "indeed"],
+      "platform_weight": {"turnitin": 0.9, "gptzero": 0.7},
+      "description": "AI sentence pattern: verbose emphasis"
+    },
+    {
+      "id": "english_pattern_005",
+      "type": "english_pattern",
+      "match": "has been proven to be",
+      "replacements": ["is", "remains", "constitutes"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI English pattern: proof claim"
+    },
+    {
+      "id": "english_pattern_006",
+      "type": "english_pattern",
+      "match": "it should be mentioned that",
+      "replacements": ["notably", "note that", "worth mentioning"],
+      "platform_weight": {"turnitin": 0.8, "gptzero": 0.6},
+      "description": "AI English pattern: filler"
+    },
+    {
+      "id": "english_pattern_007",
+      "type": "english_pattern",
+      "match": "the extent to which",
+      "replacements": ["how much", "how far", "the degree that"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI English pattern: verbose degree"
+    },
+    {
+      "id": "english_pattern_008",
+      "type": "english_pattern",
+      "match": "taken together",
+      "replacements": ["overall", "collectively", "in summary"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI English pattern: summary claim"
+    },
+    {
+      "id": "passive_005",
+      "type": "passive",
+      "match": "is known to be",
+      "replacements": ["is", "remains"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI passive: hedged classification"
+    },
+    {
+      "id": "passive_006",
+      "type": "passive",
+      "match": "has been reported to",
+      "replacements": ["reportedly", "apparently"],
+      "platform_weight": {"turnitin": 0.7, "gptzero": 0.5},
+      "description": "AI passive: evidence claim"
+    }
+  ],
+  "protected_terms": [
+    "deep learning",
+    "convolutional neural network",
+    "Transformer",
+    "attention mechanism",
+    "backpropagation",
+    "gradient descent",
+    "loss function",
+    "hyperparameter"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "patterns": [],
+  "protected_terms": [
+    "deep learning",
+    "convolutional neural network",
+    "Transformer",
+    "attention mechanism",
+    "backpropagation",
+    "gradient descent",
+    "loss function",
+    "hyperparameter"
+  ]
+}
