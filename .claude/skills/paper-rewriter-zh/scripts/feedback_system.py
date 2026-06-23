@@ -147,6 +147,7 @@ class FeedbackSystem:
                 "中度": {"multiplier": 1.0},
                 "重度": {"multiplier": 1.0}
             },
+            "technique_combinations": {},
             "problem_patterns": [],
             "new_terms": [],
             "last_updated": datetime.now().isoformat()
@@ -254,6 +255,19 @@ class FeedbackSystem:
                 self.strategies["technique_effectiveness"][tech_type]["total"] += 1
                 if is_success:
                     self.strategies["technique_effectiveness"][tech_type]["success"] += 1
+
+        # 3.5 学习技巧组合
+        changes = session.get("changes_made", [])
+        tech_types = list(set(c.get("type", "") for c in changes if c.get("type")))
+        if len(tech_types) >= 2:
+            from itertools import combinations
+            for t1, t2 in combinations(sorted(tech_types), 2):
+                key = f"{t1}+{t2}"
+                if key not in self.strategies["technique_combinations"]:
+                    self.strategies["technique_combinations"][key] = {"success": 0, "total": 0}
+                self.strategies["technique_combinations"][key]["total"] += 1
+                if is_success:
+                    self.strategies["technique_combinations"][key]["success"] += 1
 
         # 3. 学习领域模式
         if domain not in self.strategies["domain_patterns"]:
@@ -487,6 +501,17 @@ class FeedbackSystem:
             suggestions["domain_issues"] = pattern.get("common_issues", [])[-5:]
 
         suggestions["new_terms_to_preserve"] = self.strategies.get("new_terms", [])[-10:]
+
+        # 有效技巧组合
+        suggestions["effective_combinations"] = []
+        for combo_key, combo_data in self.strategies.get("technique_combinations", {}).items():
+            if combo_data["total"] >= 2:
+                rate = combo_data["success"] / combo_data["total"]
+                if rate >= 0.7:
+                    suggestions["effective_combinations"].append({
+                        "combination": combo_key,
+                        "success_rate": round(rate, 2)
+                    })
 
         return suggestions
 

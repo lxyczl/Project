@@ -362,6 +362,65 @@ class TestClassifyFailure:
         assert result == "mixed_risk"
 
 
+class TestTechniqueCombinations:
+    """技巧组合学习测试"""
+
+    def _make_system(self):
+        tmpdir = Path(tempfile.mkdtemp())
+        return FeedbackSystem(skill_dir=tmpdir)
+
+    def test_default_strategies_has_combinations_field(self):
+        system = self._make_system()
+        assert "technique_combinations" in system.strategies
+
+    def test_auto_learn_records_combinations(self):
+        system = self._make_system()
+        session = system.record_rewrite_session(
+            original_text="测试文本足够长以通过检查",
+            rewritten_text="改写文本也足够长以通过检查",
+            changes_made=[
+                {"type": "句式重组", "original": "A", "rewritten": "B"},
+                {"type": "同义词替换", "original": "C", "rewritten": "D"},
+            ]
+        )
+        system.auto_learn(session["session_id"])
+        combos = system.strategies["technique_combinations"]
+        # 排序后 key 应为 "句式重组+同义词替换"（Unicode 排序）
+        key = "+".join(sorted(["句式重组", "同义词替换"]))
+        assert key in combos
+        assert combos[key]["total"] == 1
+
+    def test_combinations_deduplicate(self):
+        """同一技巧不与自身组合"""
+        system = self._make_system()
+        session = system.record_rewrite_session(
+            original_text="测试", rewritten_text="改写",
+            changes_made=[
+                {"type": "同义词替换", "original": "A", "rewritten": "B"},
+                {"type": "同义词替换", "original": "C", "rewritten": "D"},
+            ]
+        )
+        system.auto_learn(session["session_id"])
+        combos = system.strategies["technique_combinations"]
+        # 只有一个技巧，不应产生组合
+        assert len(combos) == 0 or all(v["total"] == 0 for v in combos.values())
+
+    def test_suggestions_include_effective_combinations(self):
+        system = self._make_system()
+        # 成功 3 次
+        for _ in range(3):
+            session = system.record_rewrite_session(
+                original_text="测试文本足够长", rewritten_text="改写文本也足够长",
+                changes_made=[
+                    {"type": "句式重组", "original": "A", "rewritten": "B"},
+                    {"type": "同义词替换", "original": "C", "rewritten": "D"},
+                ]
+            )
+            system.auto_learn(session["session_id"])
+        suggestions = system.get_rewrite_suggestions("通用", "中度")
+        assert "effective_combinations" in suggestions
+
+
 class TestRewriteWithFeedback:
     """CLI 编排器测试"""
 
