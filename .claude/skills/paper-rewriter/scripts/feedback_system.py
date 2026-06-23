@@ -320,6 +320,7 @@ class FeedbackSystem:
             pattern["common_issues"] = pattern["common_issues"][-10:]
 
         # 4. 自适应学习率
+        eval_result = None
         adjustment = self.strategies["intensity_adjustments"][intensity]
         if "consecutive_failures" not in adjustment:
             adjustment["consecutive_failures"] = 0
@@ -351,8 +352,7 @@ class FeedbackSystem:
         # 5. 记录问题模式
         if feedback.get("improved") and avg_score < 3:
             failure_type = "none"
-            if session.get("metrics"):
-                eval_result = auto_evaluate(session["metrics"])
+            if session.get("metrics") and eval_result is not None:
                 failure_type = classify_failure(session["metrics"], eval_result["verdict"])
             self.strategies["problem_patterns"].append({
                 "issue": feedback["improved"],
