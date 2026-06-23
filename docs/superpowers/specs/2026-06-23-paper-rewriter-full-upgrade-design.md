@@ -90,7 +90,9 @@ def find_sentence_level_matches(
 
 **分句规则**: 与 `analyzer/syntax.py` 一致——按 `.!?` + 空格 + 大写字母 分句，排除缩写（Dr./Mr./Mrs./Prof./etc./Fig./Tab.）。
 
-**匹配策略**: 贪心匹配——对每个原文句子，在改写文本中找相似度最高的句子（避免一对多）。
+**匹配策略**: 贪心匹配——对每个原文句子，在改写文本中找相似度最高的句子（避免一对多）。如果两个原文句子匹配到同一个改写句子，保留相似度更高的那个，另一个找次优匹配。
+
+**`similarity_score` 定义**: 使用与 `calculate_similarity()` 相同的 composite score 公式（LCS * 25 + trigram * 30 + bigram * 20 + vocab * 15 + consecutive * 10），归一化到 0-1。
 
 **技巧推荐**: 根据句子级指标自动推荐：
 - `max_consecutive >= 5`: voice_conversion, clause_insertion, word_order_change
@@ -106,13 +108,25 @@ def find_consecutive_matches(tokens_orig, tokens_rew, min_length=4):
     """
     用 hash map 加速连续匹配检测。
 
-    步骤:
+    算法:
     1. 对原文建 bigram → [positions] 的 index
-    2. 改写文本滑动窗口，查 index 找连续匹配起点
-    3. 从起点延伸匹配长度
-    4. 去重（移除被更长匹配包含的短匹配）
+       orig_index = {(tokens_orig[i], tokens_orig[i+1]): i for i in range(n-1)}
+    2. 改写文本滑动窗口，对每个位置 i 查 orig_index 找匹配起点
+       key = (tokens_rew[i], tokens_rew[i+1])
+       if key in orig_index:
+           for j in orig_index[key]:  # 原文中所有匹配位置
+               # 从 (j, i) 开始向前延伸
+               length = 2  # bigram 已匹配
+               while (j + length < len(tokens_orig) and
+                      i + length < len(tokens_rew) and
+                      tokens_orig[j + length] == tokens_rew[i + length]):
+                   length += 1
+               if length >= min_length:
+                   matches.append({start_orig: j, start_rewrite: i, length, text})
+    3. 去重：移除被更长匹配完全包含的短匹配（与现有 _remove_subsumed 逻辑一致）
+    4. 跳过已匹配部分：在改写文本中跳过已匹配的 token，避免重叠报告
 
-    复杂度: O(n + m + k) 其中 k 是匹配数量
+    复杂度: O(n + m + k) 其中 n=原文长度, m=改写长度, k=匹配数量
     """
 ```
 
@@ -237,7 +251,7 @@ strategies.json 新增计数器：
 }
 ```
 
-强度调整逻辑改为：
+强度调整逻辑改为（`is_success` 由 `auto_evaluate` 的 verdict 决定：`is_success = verdict in ("success", "excellent")`）：
 
 ```python
 if not is_success:
@@ -271,7 +285,16 @@ passive_patterns = [
     r'\bhas\s+been\s+\w+ing\b',  # 完成进行被动
 ]
 
-# 不规则动词过去分词表（用于减少误报）
+# 使用方式：先用正则匹配候选被动句，再用 IRREGULAR_PAST_PARTICIPLES 验证：
+# 1. 对每个匹配，提取动词部分
+# 2. 如果动词以 ed/en/t/wn 结尾 → 确认为被动
+# 3. 如果动词在 IRREGULAR_PAST_PARTICIPLES 中 → 确认为被动
+# 4. 否则 → 不是被动，跳过
+# 这样 "The data was processed" 能匹配（processed 以 ed 结尾），
+# "The experiment was run" 也能匹配（run 在不规则动词表中），
+# "The study was important" 不会误匹配（important 不在表中且不以 ed/en/t/wn 结尾）
+
+# 不规则动词过去分词表
 IRREGULAR_PAST_PARTICIPLES = {
     "run", "put", "set", "cut", "make", "take", "come", "go",
     "give", "get", "show", "know", "think", "find", "say",
