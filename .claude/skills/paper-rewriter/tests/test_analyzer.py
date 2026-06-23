@@ -72,6 +72,14 @@ class TestSyntaxAnalyzer:
         types = {i["type"] for i in result["issues"]}
         assert "excessive_passive" in types
 
+    def test_split_sentences_abbreviations(self):
+        """缩写不应导致误切"""
+        text = "Dr. Smith conducted the experiment. The results were promising. Prof. Johnson reviewed the paper."
+        sentences = split_sentences(text)
+        # "Dr. Smith conducted the experiment" 应为一句，不应被切开
+        assert any("Dr. Smith" in s for s in sentences)
+        assert any("Prof. Johnson" in s for s in sentences)
+
 
 class TestVocabularyAnalyzer:
     """词汇分析测试"""
@@ -201,6 +209,17 @@ class TestEnglishAnalyzer:
         )
         result = analyze_english(text)
         assert result["score"] < 0.5
+
+    def test_nominalization_exceptions(self):
+        """常见非名词化词不应被标记"""
+        text = (
+            "The nation faces a critical condition regarding its education system. "
+            "The government's protection policy requires attention and direction. "
+            "The situation at the station called for immediate action."
+        )
+        result = analyze_english(text)
+        types = {i["type"] for i in result["issues"]}
+        assert "excessive_nominalization" not in types
 
 
 class TestStructureAnalyzer:

@@ -4,13 +4,30 @@ import re
 import statistics
 
 
+ABBREVIATIONS = {
+    'dr', 'mr', 'mrs', 'ms', 'prof', 'sr', 'jr', 'vs', 'etc',
+    'fig', 'tab', 'eq', 'ref', 'vol', 'no', 'pp', 'ed', 'est',
+    'approx', 'dept', 'univ', 'inc', 'ltd', 'corp', 'govt',
+    'u.s', 'u.k', 'e.g', 'i.e', 'al'
+}
+
+
+def _ends_with_abbreviation(text: str) -> bool:
+    """检查文本是否以缩写结尾"""
+    last_word = text.strip().split()[-1].rstrip('.').lower()
+    return last_word in ABBREVIATIONS
+
+
 def split_sentences(text: str) -> list[str]:
-    """按句号/问号/感叹号分句（英文）。"""
-    # 匹配句末标点，但避免误切缩写（e.g., Dr. U.S.）
-    # 简单策略：句号后跟空格+大写字母，或行末
+    """按句号/问号/感叹号分句（英文），排除缩写误切。"""
     raw = re.split(r'(?<=[.!?])\s+(?=[A-Z])', text)
-    sentences = [s.strip() for s in raw if s.strip() and len(s.strip()) > 10]
-    return sentences
+    merged = []
+    for sent in raw:
+        if merged and _ends_with_abbreviation(merged[-1]):
+            merged[-1] = merged[-1] + ' ' + sent
+        else:
+            merged.append(sent)
+    return [s.strip() for s in merged if s.strip() and len(s.strip()) > 10]
 
 
 def analyze_syntax(text: str) -> dict:
