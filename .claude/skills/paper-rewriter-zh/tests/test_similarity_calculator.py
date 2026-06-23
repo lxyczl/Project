@@ -120,8 +120,8 @@ class TestCalculateSimilarity:
         orig = "研究表明该方法具有重要意义"
         rewrite = "研究显示此方法具有重大价值"
         result = calculate_similarity(orig, rewrite)
-        # 字重叠率应该较高（共享很多字）
-        assert result["unigram_overlap"] > 0.5
+        # 词重叠率应该较高（共享很多词）
+        assert result["unigram_overlap"] > 0.3
         # 但连续匹配应该被打破
         assert result["max_consecutive"] < 13
 
@@ -135,9 +135,25 @@ class TestCalculateSimilarity:
         expected_keys = {
             "unigram_overlap", "bigram_overlap", "trigram_overlap",
             "max_consecutive", "vocabulary_diversity",
-            "original_char_count", "rewritten_char_count"
+            "original_char_count", "rewritten_char_count",
+            "token_mode", "content_word_overlap"
         }
         assert set(result.keys()) == expected_keys
+
+    def test_returns_token_mode(self):
+        result = calculate_similarity("测试文本", "改写文本")
+        assert "token_mode" in result
+        assert result["token_mode"] in ("word", "char")
+
+    def test_returns_content_word_overlap(self):
+        result = calculate_similarity("研究表明该方法具有重要意义", "研究显示此方法具有重大价值")
+        assert "content_word_overlap" in result
+        assert 0 <= result["content_word_overlap"] <= 1
+
+    def test_max_consecutive_always_char_level(self):
+        """max_consecutive 始终按字符级计算"""
+        result = calculate_similarity("研究方法", "研究方法")
+        assert result["max_consecutive"] == 4  # 4 个字符，不论 token_mode
 
 
 class TestFindConsecutiveMatches:

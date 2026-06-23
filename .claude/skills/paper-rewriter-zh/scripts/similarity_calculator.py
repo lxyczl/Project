@@ -91,16 +91,26 @@ def calculate_similarity(original: str, rewritten: str) -> dict:
     计算两段文本的相似度
 
     返回:
-        - unigram_overlap: 字级别的重叠率
+        - unigram_overlap: 字/词级别的重叠率
         - bigram_overlap: 二元组重叠率
         - trigram_overlap: 三元组重叠率
-        - max_consecutive: 最长连续匹配字数
+        - max_consecutive: 最长连续匹配字数（始终字符级）
         - vocabulary_diversity: 词汇多样性分数
+        - token_mode: 实际使用的分词模式 ("word" / "char")
+        - content_word_overlap: 过滤停用词后的实词重叠率
     """
-    orig_tokens = _char_tokenize(original)
-    rewrite_tokens = _char_tokenize(rewritten)
+    # 尝试词级分词（用于 n-gram 重叠率）
+    orig_tokens = tokenize(original, mode="word")
+    rewrite_tokens = tokenize(rewritten, mode="word")
+    token_mode = "word"
 
-    # 字级别重叠
+    # 如果词级分词结果太少（<3 个 token），降级到字符级
+    if len(orig_tokens) < 3 or len(rewrite_tokens) < 3:
+        orig_tokens = _char_tokenize(original)
+        rewrite_tokens = _char_tokenize(rewritten)
+        token_mode = "char"
+
+    # 字/词级别重叠
     orig_set = set(orig_tokens)
     rewrite_set = set(rewrite_tokens)
     unigram_overlap = len(orig_set & rewrite_set) / len(orig_set) if orig_set else 0
@@ -115,11 +125,21 @@ def calculate_similarity(original: str, rewritten: str) -> dict:
     rewrite_trigrams = set(ngrams(rewrite_tokens, 3))
     trigram_overlap = len(orig_trigrams & rewrite_trigrams) / len(orig_trigrams) if orig_trigrams else 0
 
-    # 最长连续匹配（使用动态规划，不依赖位置对齐）
+    # 最长连续匹配（始终按字符级，匹配知网查重逻辑）
     max_consecutive = find_longest_common_substring(original, rewritten)
 
-    # 词汇多样性（独特字/总字数）
+    # 词汇多样性（独特 token / 总 token 数）
     vocabulary_diversity = len(rewrite_set) / len(rewrite_tokens) if rewrite_tokens else 0
+
+    # 实词重叠率（过滤停用词后）
+    orig_content = _filter_stopwords(orig_tokens)
+    rewrite_content = _filter_stopwords(rewrite_tokens)
+    orig_content_set = set(orig_content)
+    rewrite_content_set = set(rewrite_content)
+    content_word_overlap = (
+        len(orig_content_set & rewrite_content_set) / len(orig_content_set)
+        if orig_content_set else 0
+    )
 
     return {
         "unigram_overlap": round(unigram_overlap, 3),
@@ -127,8 +147,10 @@ def calculate_similarity(original: str, rewritten: str) -> dict:
         "trigram_overlap": round(trigram_overlap, 3),
         "max_consecutive": max_consecutive,
         "vocabulary_diversity": round(vocabulary_diversity, 3),
-        "original_char_count": len(orig_tokens),
-        "rewritten_char_count": len(rewrite_tokens)
+        "original_char_count": len(_char_tokenize(original)),
+        "rewritten_char_count": len(_char_tokenize(rewritten)),
+        "token_mode": token_mode,
+        "content_word_overlap": round(content_word_overlap, 3),
     }
 
 
@@ -142,15 +164,17 @@ def format_report(original: str, rewritten: str) -> str:
 ### 基本信息
 - 原文字数: {original_char_count}
 - 改写字数: {rewritten_char_count}
+- 分词模式: {token_mode}
 
 ### 相似度指标
 | 指标 | 值 | 说明 |
 |------|-----|------|
-| 字重叠率 | {unigram_overlap:.1%} | 字级别的相似度 |
-| 二元组重叠率 | {bigram_overlap:.1%} | 连续两个字的相似度 |
-| 三元组重叠率 | {trigram_overlap:.1%} | 连续三个字的相似度 |
+| 字/词重叠率 | {unigram_overlap:.1%} | {unigram_desc} |
+| 二元组重叠率 | {bigram_overlap:.1%} | 连续两个 token 的相似度 |
+| 三元组重叠率 | {trigram_overlap:.1%} | 连续三个 token 的相似度 |
 | 最长连续匹配 | {max_consecutive} 字 | 改写后最多连续几个字与原文相同 |
-| 词汇多样性 | {vocabulary_diversity:.1%} | 独特字占比 |
+| 词汇多样性 | {vocabulary_diversity:.1%} | 独特 token 占比 |
+| 实词重叠率 | {content_word_overlap:.1%} | 过滤停用词后的重叠率 |
 
 ### 评估结果
 {assessment}
@@ -164,11 +188,13 @@ def format_report(original: str, rewritten: str) -> str:
     elif metrics["trigram_overlap"] > TRIGRAM_CAUTION:
         assessment = "⚠️ **注意**: 三元组重叠率较高，建议调整句子结构"
     elif metrics["unigram_overlap"] > UNIGRAM_CAUTION:
-        assessment = "⚠️ **注意**: 字重叠率较高，建议增加同义词替换"
+        assessment = "⚠️ **注意**: 字/词重叠率较高，建议增加同义词替换"
     else:
         assessment = "✅ **通过**: 相似度在可接受范围内"
 
-    return report.format(**metrics, assessment=assessment)
+    unigram_desc = "词级别的相似度" if metrics["token_mode"] == "word" else "字级别的相似度"
+
+    return report.format(**metrics, assessment=assessment, unigram_desc=unigram_desc)
 
 
 def find_consecutive_matches(original: str, rewritten: str, min_length: int = CONSECUTIVE_WARNING) -> list[dict]:
