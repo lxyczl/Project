@@ -105,7 +105,19 @@ class FeedbackSystem:
         """加载学习到的策略。"""
         if self.strategies_file.exists():
             try:
-                return json.loads(self.strategies_file.read_text(encoding="utf-8"))
+                data = json.loads(self.strategies_file.read_text(encoding="utf-8"))
+                # 兼容旧版本：补全缺失字段
+                if "technique_combinations" not in data:
+                    data["technique_combinations"] = {}
+                if "intensity_adjustments" in data:
+                    for level in ("light", "medium", "heavy"):
+                        if level in data["intensity_adjustments"]:
+                            adj = data["intensity_adjustments"][level]
+                            if "consecutive_failures" not in adj:
+                                adj["consecutive_failures"] = 0
+                            if "consecutive_successes" not in adj:
+                                adj["consecutive_successes"] = 0
+                return data
             except (json.JSONDecodeError, UnicodeDecodeError):
                 pass
 
@@ -121,10 +133,11 @@ class FeedbackSystem:
             },
             "section_patterns": {},
             "intensity_adjustments": {
-                "light": {"multiplier": 1.0},
-                "medium": {"multiplier": 1.0},
-                "heavy": {"multiplier": 1.0},
+                "light": {"multiplier": 1.0, "consecutive_failures": 0, "consecutive_successes": 0},
+                "medium": {"multiplier": 1.0, "consecutive_failures": 0, "consecutive_successes": 0},
+                "heavy": {"multiplier": 1.0, "consecutive_failures": 0, "consecutive_successes": 0},
             },
+            "technique_combinations": {},
             "problem_patterns": [],
             "session_count": 0,
             "total_paragraphs_rewritten": 0,
