@@ -1,0 +1,28 @@
+{
+  "session_id": "2026-06-23-63e16d18",
+  "timestamp": "2026-06-23T23:00:48.291590",
+  "section_type": "body",
+  "original_text": "In recent years, it is worth noting that this plays a crucial role.",
+  "rewritten_text": "This is important for the field.",
+  "risk_before": 0.138,
+  "risk_after": 0.05,
+  "risk_reduction": 0.088,
+  "success": true,
+  "auto_evaluation": {
+    "verdict": "success",
+    "is_success": true,
+    "reduction": 0.088,
+    "reason": "Rewrite successful"
+  },
+  "failure_type": null,
+  "techniques_used": [],
+  "issues_resolved": [],
+  "issues_before": [
+    "low_cttr",
+    "cliche_detected"
+  ],
+  "issues_after": [
+    "low_cttr"
+  ],
+  "intensity": "medium"
+}

@@ -113,12 +113,12 @@
       "auto_fail_count": 1
     },
     "通用": {
-      "avg_score": 3.233333333333334,
-      "session_count": 3,
+      "avg_score": 4.4333333333333345,
+      "session_count": 15,
       "common_issues": [
         "连续11字匹配（阈值10），三元组8.5%（阈值20%）"
       ],
-      "auto_success_count": 2,
+      "auto_success_count": 14,
       "auto_fail_count": 1
     },
     "地下水脆弱性": {
@@ -136,6 +136,25 @@
       "common_issues": [],
       "auto_success_count": 1,
       "auto_fail_count": 0
+    },
+    "计算机": {
+      "avg_score": 4.4,
+      "session_count": 4,
+      "common_issues": [],
+      "auto_success_count": 4,
+      "auto_fail_count": 0
+    },
+    "环境科学": {
+      "avg_score": 1.825,
+      "session_count": 8,
+      "common_issues": [
+        "连续34字匹配，超过知网13字阈值",
+        "连续34字匹配，超过知网13字阈值",
+        "连续34字匹配，超过知网13字阈值",
+        "连续34字匹配，超过知网13字阈值"
+      ],
+      "auto_success_count": 4,
+      "auto_fail_count": 4
     }
   },
   "intensity_adjustments": {
@@ -145,9 +164,9 @@
       "consecutive_successes": 1
     },
     "中度": {
-      "multiplier": 1.11,
-      "consecutive_failures": 2,
-      "consecutive_successes": 0
+      "multiplier": 1.050000000000001,
+      "consecutive_failures": 0,
+      "consecutive_successes": 2
     },
     "重度": {
       "multiplier": 1.05,
@@ -183,8 +202,44 @@
       "max_consecutive": 12,
       "trigram_overlap": 0.349,
       "timestamp": "2026-06-23T20:16:52.173713"
+    },
+    {
+      "issue": "连续34字匹配，超过知网13字阈值",
+      "failure_type": "consecutive_too_long",
+      "domain": "环境科学",
+      "intensity": "中度",
+      "max_consecutive": 34,
+      "trigram_overlap": 1.0,
+      "timestamp": "2026-06-23T23:06:18.597846"
+    },
+    {
+      "issue": "连续34字匹配，超过知网13字阈值",
+      "failure_type": "consecutive_too_long",
+      "domain": "环境科学",
+      "intensity": "中度",
+      "max_consecutive": 34,
+      "trigram_overlap": 1.0,
+      "timestamp": "2026-06-23T23:08:06.756043"
+    },
+    {
+      "issue": "连续34字匹配，超过知网13字阈值",
+      "failure_type": "consecutive_too_long",
+      "domain": "环境科学",
+      "intensity": "中度",
+      "max_consecutive": 34,
+      "trigram_overlap": 1.0,
+      "timestamp": "2026-06-23T23:09:11.562864"
+    },
+    {
+      "issue": "连续34字匹配，超过知网13字阈值",
+      "failure_type": "consecutive_too_long",
+      "domain": "环境科学",
+      "intensity": "中度",
+      "max_consecutive": 34,
+      "trigram_overlap": 1.0,
+      "timestamp": "2026-06-23T23:09:36.031294"
     }
   ],
   "new_terms": [],
-  "last_updated": "2026-06-23T20:16:52.189438"
+  "last_updated": "2026-06-23T23:09:36.041569"
 }

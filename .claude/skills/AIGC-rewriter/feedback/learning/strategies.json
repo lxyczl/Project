@@ -29,7 +29,7 @@
   "section_patterns": {
     "body": {
       "avg_reduction": 0.044,
-      "session_count": 6,
+      "session_count": 8,
       "common_issues": [],
       "effective_techniques": {}
     }
@@ -41,7 +41,7 @@
       "consecutive_successes": 0
     },
     "medium": {
-      "multiplier": 1.1500000000000001,
+      "multiplier": 1.2000000000000002,
       "consecutive_failures": 1,
       "consecutive_successes": 0
     },
@@ -76,10 +76,18 @@
       "failure_type": "risk_increased",
       "techniques": [],
       "timestamp": "2026-06-23T22:42:27.035567"
+    },
+    {
+      "section": "body",
+      "risk_before": 0.05,
+      "risk_after": 0.05,
+      "failure_type": "risk_increased",
+      "techniques": [],
+      "timestamp": "2026-06-23T23:00:48.309288"
     }
   ],
-  "session_count": 6,
-  "total_paragraphs_rewritten": 6,
-  "total_risk_reduction": 0.264,
-  "last_updated": "2026-06-23T22:42:27.035890"
+  "session_count": 8,
+  "total_paragraphs_rewritten": 8,
+  "total_risk_reduction": 0.352,
+  "last_updated": "2026-06-23T23:00:48.309505"
 }

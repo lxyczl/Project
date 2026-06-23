@@ -1,0 +1,30 @@
+{
+  "session_id": "2026-06-23-d415645a",
+  "timestamp": "2026-06-23T23:06:18.600866",
+  "domain": "环境科学",
+  "intensity": "中度",
+  "section_type": "unknown",
+  "original_text": "使用DRASTIC模型和GIS技术进行地下水脆弱性评估",
+  "rewritten_text": "利用DRASTIC模型与GIS方法开展地下水脆弱性评价",
+  "changes_made": [],
+  "scores": null,
+  "feedback": null,
+  "metrics": {
+    "unigram_overlap": 0.5,
+    "bigram_overlap": 0.222,
+    "trigram_overlap": 0.0,
+    "max_consecutive": 7,
+    "vocabulary_diversity": 1.0,
+    "original_char_count": 17,
+    "rewritten_char_count": 17,
+    "token_mode": "word",
+    "content_word_overlap": 0.556
+  },
+  "auto_evaluation": {
+    "verdict": "success",
+    "score": 73,
+    "is_success": true,
+    "reason": "连续7字匹配，三元组0.0%，改写达标"
+  },
+  "auto_learned": true
+}

@@ -1,0 +1,27 @@
+{
+  "session_id": "2026-06-23-865321e5",
+  "timestamp": "2026-06-23T23:00:48.309288",
+  "section_type": "body",
+  "original_text": "The model performed well on the benchmark dataset.",
+  "rewritten_text": "The approach achieved strong results on the evaluation data.",
+  "risk_before": 0.05,
+  "risk_after": 0.05,
+  "risk_reduction": 0.0,
+  "success": false,
+  "auto_evaluation": {
+    "verdict": "fail",
+    "is_success": false,
+    "reduction": 0.0,
+    "reason": "Risk score did not decrease (0.05)"
+  },
+  "failure_type": "risk_increased",
+  "techniques_used": [],
+  "issues_resolved": [],
+  "issues_before": [
+    "low_cttr"
+  ],
+  "issues_after": [
+    "low_cttr"
+  ],
+  "intensity": "medium"
+}

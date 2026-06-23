@@ -1,0 +1,30 @@
+{
+  "session_id": "2026-06-23-de881d0c",
+  "timestamp": "2026-06-23T23:06:18.592088",
+  "domain": "计算机",
+  "intensity": "中度",
+  "section_type": "unknown",
+  "original_text": "深度学习是人工智能的核心技术，广泛应用于计算机视觉领域",
+  "rewritten_text": "机器学习是AI的关键技术，在图像识别方面应用广泛",
+  "changes_made": [],
+  "scores": null,
+  "feedback": null,
+  "metrics": {
+    "unigram_overlap": 0.333,
+    "bigram_overlap": 0.091,
+    "trigram_overlap": 0.0,
+    "max_consecutive": 3,
+    "vocabulary_diversity": 1.0,
+    "original_char_count": 26,
+    "rewritten_char_count": 21,
+    "token_mode": "word",
+    "content_word_overlap": 0.222
+  },
+  "auto_evaluation": {
+    "verdict": "excellent",
+    "score": 88,
+    "is_success": true,
+    "reason": "连续3字匹配，三元组0.0%，改写效果优秀"
+  },
+  "auto_learned": true
+}

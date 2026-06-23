@@ -127,3 +127,49 @@ $PY scripts/similarity_calculator.py <original> <rewritten>
 # View strategy report
 $PY scripts/rewrite_with_feedback.py report
 ```
+
+## Self-Learning Mechanism
+
+The system automatically records sessions and learns effective strategies after each rewrite.
+
+### Before rewriting: get historical suggestions
+
+```bash
+$PY scripts/rewrite_with_feedback.py suggest <domain> <intensity>
+```
+
+Returns:
+- **effective_techniques**: techniques with ≥60% success rate, use first
+- **section_issues**: common problems for this section type
+- **preferred_vocabulary**: historically successful replacements
+
+### After rewriting: record session
+
+Pipeline automatically calls `record_rewrite_session`, recording:
+- Original / rewritten / similarity metrics
+- Techniques used / domain / intensity
+- Auto-evaluation result (auto_evaluate)
+
+### Auto-evaluation
+
+`auto_evaluate` judges based on Turnitin rules:
+- `excellent`: consecutive < 5 words, trigram < 10%
+- `success`: consecutive < 8 words, trigram < 20%
+- `warning`: approaching thresholds
+- `fail`: consecutive ≥ 8 words or trigram ≥ 30%
+
+### Failure classification
+
+`classify_failure` identifies specific failure reasons:
+- `consecutive_too_long`: consecutive word match too long
+- `structure_too_similar`: sentence structure too similar
+- `trigram_risk`: trigram overlap too high
+- `mixed_risk`: multiple metrics near thresholds
+
+### Strategy report
+
+```bash
+$PY scripts/rewrite_with_feedback.py report
+```
+
+View historical success rates, effective techniques, and common issues.

@@ -1,0 +1,30 @@
+{
+  "session_id": "2026-06-23-24d5782e",
+  "timestamp": "2026-06-23T23:08:06.756043",
+  "domain": "环境科学",
+  "intensity": "中度",
+  "section_type": "unknown",
+  "original_text": "近年来，随着经济的快速发展，环境问题日益突出。此外，水资源短缺问题也十分严重。",
+  "rewritten_text": "近年来，随着经济的快速发展，环境问题日益突出。此外，水资源短缺问题也十分严重。",
+  "changes_made": [],
+  "scores": null,
+  "feedback": null,
+  "metrics": {
+    "unigram_overlap": 1.0,
+    "bigram_overlap": 1.0,
+    "trigram_overlap": 1.0,
+    "max_consecutive": 34,
+    "vocabulary_diversity": 0.81,
+    "original_char_count": 34,
+    "rewritten_char_count": 34,
+    "token_mode": "word",
+    "content_word_overlap": 1.0
+  },
+  "auto_evaluation": {
+    "verdict": "fail",
+    "score": 0,
+    "is_success": false,
+    "reason": "连续34字匹配，超过知网13字阈值"
+  },
+  "auto_learned": true
+}

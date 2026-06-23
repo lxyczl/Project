@@ -81,3 +81,49 @@ $PY scripts/rewrite_with_feedback.py suggest <学科> <强度>  # 获取建议
 $PY scripts/similarity_calculator.py <原文> <改写文>          # 仅分析相似度
 $PY scripts/rewrite_with_feedback.py report                   # 策略报告
 ```
+
+## 自我学习机制
+
+每次改写后，系统自动记录会话并学习有效策略。
+
+### 改写前：获取历史建议
+
+```bash
+$PY scripts/rewrite_with_feedback.py suggest <学科> <强度>
+```
+
+返回的建议包含：
+- **effective_techniques**：成功率 ≥ 60% 的技巧，优先使用
+- **section_issues**：该章节的常见问题，避免重复犯错
+- **preferred_vocabulary**：历史成功的替换对
+
+### 改写后：记录会话
+
+pipeline 自动调用 `record_rewrite_session`，记录：
+- 原文 / 改写文 / 相似度指标
+- 使用的技巧 / 学科 / 强度
+- 自动评估结果（auto_evaluate）
+
+### 自动评估
+
+`auto_evaluate` 基于知网规则判定：
+- `excellent`：连续匹配 < 8 字，三元组 < 10%
+- `success`：连续匹配 < 13 字，三元组 < 20%
+- `warning`：接近阈值但未超过
+- `fail`：连续 ≥ 13 字或三元组 ≥ 20%
+
+### 失败分类
+
+`classify_failure` 细分失败原因：
+- `consecutive_too_long`：连续匹配过长
+- `structure_too_similar`：句式结构过于相似
+- `trigram_risk`：三元组重叠率过高
+- `mixed_risk`：多项指标接近阈值
+
+### 策略报告
+
+```bash
+$PY scripts/rewrite_with_feedback.py report
+```
+
+查看历史改写的成功率、有效技巧、常见问题。

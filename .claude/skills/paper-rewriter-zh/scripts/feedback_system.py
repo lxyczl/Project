@@ -84,6 +84,24 @@ def evaluate_rewrite_quality(metrics: dict) -> dict:
                 "reason": f"连续{mc}字匹配，三元组{tri:.1%}，改写达标"}
 
 
+def auto_evaluate(metrics: dict, threshold: float = 0.3) -> dict:
+    """基于相似度指标自动判定改写结果。
+
+    兼容 evaluate_rewrite_quality 的输入，返回统一格式：
+    - verdict: excellent / success / warning / fail
+    - is_success: bool
+    - reduction: 相似度降低量（如有）
+    - reason: 判定原因
+    """
+    result = evaluate_rewrite_quality(metrics)
+    return {
+        "verdict": result["verdict"],
+        "is_success": result["is_success"],
+        "reduction": result.get("score", 0),
+        "reason": result["reason"],
+    }
+
+
 def classify_failure(metrics: dict, verdict: str) -> str:
     """根据指标和已有 verdict 细分失败原因。
 
