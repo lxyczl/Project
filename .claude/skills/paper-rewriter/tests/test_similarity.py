@@ -122,3 +122,38 @@ class TestContentWordOverlap:
         from similarity_calculator import calculate_similarity
         result = calculate_similarity("The method is effective", "The approach works well")
         assert result["token_mode"] in ("word", "regex")
+
+
+class TestRewriteWithFeedbackIntegration:
+    """测试改写分析集成"""
+
+    def test_analyze_rewrite_extended_fields(self, tmp_path):
+        """analyze_rewrite 应返回新增字段"""
+        from rewrite_with_feedback import RewriteWithFeedback
+
+        r = RewriteWithFeedback(tmp_path)
+        result = r.analyze_rewrite(
+            original="The method is effective for this problem. The results show improvement.",
+            rewritten="The approach is effective for this issue. The findings demonstrate improvement.",
+            domain="test",
+            intensity="medium"
+        )
+        assert "auto_evaluation" in result
+        assert "hot_sentences" in result
+        assert "needs_iteration" in result
+        assert "verdict" in result["auto_evaluation"]
+
+    def test_analyze_rewrite_needs_iteration_on_fail(self, tmp_path):
+        """高相似度应触发迭代"""
+        from rewrite_with_feedback import RewriteWithFeedback
+
+        r = RewriteWithFeedback(tmp_path)
+        # 几乎相同的文本
+        text = "The method is effective for this problem and shows good results"
+        result = r.analyze_rewrite(
+            original=text,
+            rewritten=text,
+            domain="test",
+            intensity="medium"
+        )
+        assert result["needs_iteration"] is True
