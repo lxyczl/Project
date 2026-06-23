@@ -197,6 +197,66 @@ def format_report(original: str, rewritten: str) -> str:
     return report.format(**metrics, assessment=assessment, unigram_desc=unigram_desc)
 
 
+def _split_sentences(text: str) -> list[str]:
+    """按句号/分号/问号/感叹号/换行分句，过滤空句。"""
+    if not text or not text.strip():
+        return []
+    sentences = re.split(r'(?<=[。；？！\n])', text)
+    return [s.strip() for s in sentences if s.strip()]
+
+
+def find_sentence_level_matches(
+    original: str,
+    rewritten: str,
+    threshold: float = 0.5
+) -> list[dict]:
+    """
+    逐句对比，返回相似度超过阈值的句子对。
+
+    每个原句只匹配一个最相似的改写句（贪心匹配，避免重复）。
+    返回按 similarity_score 降序排列。
+    """
+    orig_sentences = _split_sentences(original)
+    rew_sentences = _split_sentences(rewritten)
+
+    if not orig_sentences or not rew_sentences:
+        return []
+
+    matches = []
+    used_rew = set()  # 已匹配的改写句子索引
+
+    for orig_sent in orig_sentences:
+        best_score = 0.0
+        best_idx = -1
+        best_metrics = None
+
+        for j, rew_sent in enumerate(rew_sentences):
+            if j in used_rew:
+                continue
+            metrics = calculate_similarity(orig_sent, rew_sent)
+            # 用 unigram_overlap 作为句子相似度
+            score = metrics["unigram_overlap"]
+
+            if score > best_score:
+                best_score = score
+                best_idx = j
+                best_metrics = metrics
+
+        if best_idx >= 0 and best_score >= threshold:
+            used_rew.add(best_idx)
+            matches.append({
+                "original_sentence": orig_sent,
+                "rewritten_sentence": rew_sentences[best_idx],
+                "similarity_score": round(best_score, 3),
+                "max_consecutive": best_metrics["max_consecutive"],
+                "trigram_overlap": best_metrics["trigram_overlap"],
+            })
+
+    # 按相似度降序排列
+    matches.sort(key=lambda x: x["similarity_score"], reverse=True)
+    return matches
+
+
 def find_consecutive_matches(original: str, rewritten: str, min_length: int = CONSECUTIVE_WARNING) -> list[dict]:
     """找出所有超过指定长度的连续匹配"""
     orig_tokens = _char_tokenize(original)

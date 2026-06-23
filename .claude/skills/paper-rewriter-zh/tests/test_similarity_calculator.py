@@ -9,11 +9,13 @@ from similarity_calculator import (
     tokenize,
     _char_tokenize,
     _filter_stopwords,
+    _split_sentences,
     STOPWORDS,
     ngrams,
     calculate_similarity,
     find_consecutive_matches,
     find_longest_common_substring,
+    find_sentence_level_matches,
     format_report,
     CONSECUTIVE_WARNING,
     CONSECUTIVE_CAUTION,
@@ -231,6 +233,66 @@ class TestFormatReport:
         # 完全不同的文本应该通过
         report = format_report("研究方法具有重要意义", "天气晴朗万里无云")
         assert "通过" in report
+
+
+class TestSplitSentences:
+    def test_basic_split(self):
+        assert _split_sentences("研究表明X很重要。Y具有重要意义。") == ["研究表明X很重要。", "Y具有重要意义。"]
+
+    def test_multiple_punctuations(self):
+        result = _split_sentences("A。B；C？D！")
+        assert len(result) == 4
+
+    def test_empty(self):
+        assert _split_sentences("") == []
+        assert _split_sentences("   ") == []
+
+    def test_no_punctuation(self):
+        # 无标点时整个文本作为一句
+        assert _split_sentences("没有标点的句子") == ["没有标点的句子"]
+
+    def test_newline_split(self):
+        result = _split_sentences("第一行\n第二行")
+        assert len(result) == 2
+
+
+class TestFindSentenceLevelMatches:
+    """句子级热点定位测试"""
+
+    def test_finds_similar_sentence(self):
+        orig = "研究表明X很重要。Y具有重要意义。"
+        rew = "研究显示X非常关键。Y具有重大价值。"
+        matches = find_sentence_level_matches(orig, rew, threshold=0.3)
+        assert len(matches) > 0
+        assert "original_sentence" in matches[0]
+        assert "rewritten_sentence" in matches[0]
+        assert "similarity_score" in matches[0]
+        assert "max_consecutive" in matches[0]
+
+    def test_no_match_below_threshold(self):
+        orig = "天气晴朗万里无云。"
+        rew = "研究方法具有重要意义。"
+        matches = find_sentence_level_matches(orig, rew, threshold=0.5)
+        assert len(matches) == 0
+
+    def test_empty_input(self):
+        assert find_sentence_level_matches("", "研究方法") == []
+        assert find_sentence_level_matches("研究方法", "") == []
+        assert find_sentence_level_matches("", "") == []
+
+    def test_multiple_sentences(self):
+        orig = "A导致B。C影响D。E促进F。"
+        rew = "A造成B。X影响Y。E推动F。"
+        matches = find_sentence_level_matches(orig, rew, threshold=0.3)
+        # 至少匹配到 2 句（A->A, E->E）
+        assert len(matches) >= 2
+
+    def test_returns_sorted_by_similarity(self):
+        orig = "研究方法有效。数据分析困难。"
+        rew = "研究方法可行。数据处理复杂。"
+        matches = find_sentence_level_matches(orig, rew, threshold=0.2)
+        if len(matches) >= 2:
+            assert matches[0]["similarity_score"] >= matches[1]["similarity_score"]
 
 
 if __name__ == "__main__":
