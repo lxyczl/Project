@@ -1,1 +1,0 @@
-# paper-rewriter scripts package
